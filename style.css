@@ -1,0 +1,254 @@
+body {
+    background-color: rgb(19, 24, 49);
+    margin: 0;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    color: #f3f4f8;
+}
+
+.header {
+    --header-height: 180px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: var(--header-height);
+    background: linear-gradient(90deg, #5b6bd6 0%, #7f9bff 100%);
+    color: white;
+    box-shadow: 0 8px 30px rgba(11, 12, 30, 0.6);
+    z-index: 40;
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    height: 100%;
+    padding: 16px 20px;
+}
+
+.logo {
+    width: 160px;
+    height: 160px;
+    min-width: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+    box-shadow: 0 14px 40px rgba(11,12,30,0.6), 0 8px 30px rgba(91,107,214,0.28), 0 0 30px rgba(127,155,255,0.18);
+    border: 3px solid rgba(255,255,255,0.06);
+}
+
+.nav {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.nav-link {
+    padding: 12px 18px;
+    border-radius: 12px;
+    color: #fff;
+    text-decoration: none;
+    background: rgba(255,255,255,0.04);
+    font-size: 18px;
+    font-weight: 600;
+    transition: background 160ms ease, transform 140ms ease;
+}
+
+.nav-link:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateY(-3px);
+}
+
+.cta {
+    display: flex;
+    align-items: center;
+}
+
+.button {
+    display: inline-block;
+    padding: 12px 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.button.primary {
+    background: #ffcf4d;
+    color: #0b0c1e;
+    box-shadow: 0 8px 30px rgba(255,207,77,0.18);
+}
+
+.button.primary:hover {
+    filter: brightness(0.98);
+    transform: translateY(-3px);
+}
+
+.middlemanfind:hover,
+.aboutUs:hover {
+    background: rgba(255,255,255,0.06);
+    transform: translateY(-2px);
+    cursor: pointer;
+}
+
+/* Make header items stack nicely on small screens */
+@media (max-width: 720px) {
+    :root { --header-height: 120px; }
+    .header-inner { padding: 10px 14px; }
+    .nav { display: none; }
+    .logo { width: 96px; height: 96px; min-width: 96px; }
+    .logo img { width: 88px; height: 88px; }
+    .button.primary { padding: 10px 14px; font-size: 14px; }
+}
+
+/* Utility: center page content if more added later */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.logo img {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.4), 0 8px 24px rgba(91,107,214,0.18) inset;
+}
+
+/* Design system */
+:root{
+    --bg: #0b1435;
+    --nav-accent: #5b6bd6;
+    --gold: #ffcf4d;
+    --glass-bg: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.06);
+}
+
+body { background: radial-gradient(1200px 400px at 10% 10%, rgba(127,155,255,0.06), transparent), var(--bg); }
+
+.glass { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid var(--glass-border); backdrop-filter: blur(8px); border-radius: 14px; }
+
+.section { padding: 44px 0; }
+.section h2 { color: #eaf0ff; margin-bottom: 18px; font-size: 22px; }
+
+/* Hero */
+.hero { position: relative; overflow: hidden; display: flex; align-items: center; height: calc(var(--header-height) + 320px); }
+#hero-canvas{ position:absolute; inset:0; width:100%; height:100%; z-index:0; }
+.hero-inner{ position:relative; z-index:2; display:flex; align-items:center; justify-content:space-between; gap:24px; padding:40px 0; }
+.hero-copy { max-width: 720px; }
+.hero h1{ font-size:48px; margin:0 0 12px; color:#fff; line-height:1.02; }
+.lead{ color: #dfe7ff; font-size:18px; margin-bottom:18px; }
+.hero-ctas { display:flex; gap:12px; }
+.button.large { padding:14px 22px; font-size:18px; border-radius:12px; }
+.button.xlarge { padding:18px 28px; font-size:20px; }
+.button.ghost { background: transparent; border:1px solid rgba(255,255,255,0.08); color:#fff; }
+.feature-pill { display:inline-block; padding:8px 12px; margin:6px; background: rgba(255,255,255,0.03); border-radius:999px; color:#e6eeff; }
+
+/* Timeline */
+.timeline{ display:flex; gap:12px; flex-wrap:wrap; }
+.timeline .step{ flex:1 1 220px; padding:18px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); }
+
+/* Feature cards */
+.cards{ display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:18px; }
+.card{ padding:18px; border-radius:12px; }
+.card .icon{ font-size:28px; margin-bottom:8px; }
+
+/* Stats */
+.stats-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:18px; }
+.stat{ padding:16px; border-radius:12px; text-align:center; }
+.stat .num{ font-size:28px; font-weight:800; color:var(--gold); }
+.stat .label{ color:#dbe6ff; margin-top:6px; }
+
+/* Reviews */
+.review-cards{ display:flex; gap:14px; flex-wrap:wrap; }
+.review{ display:flex; gap:12px; padding:14px; align-items:center; }
+.review .avatar{ width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,#6b78ff,#ffcf4d); display:flex; align-items:center; justify-content:center; color:#08102a; font-weight:700; }
+
+/* Accordion */
+.accordion{ display:block; }
+.acc-item{ margin-bottom:8px; }
+.acc-toggle{ width:100%; text-align:left; padding:12px 14px; border-radius:10px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:#eaf0ff; }
+.acc-panel{ max-height:0; overflow:hidden; transition:max-height 260ms ease; padding:0 14px; color:#dce6ff; }
+
+/* Team */
+.team-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:16px; }
+.team-card{ padding:12px; text-align:center; }
+.avatar.large{ width:88px; height:88px; border-radius:50%; margin:8px auto; display:flex; align-items:center; justify-content:center; font-size:28px; background:linear-gradient(135deg,#6b78ff,#8ad6ff); color:#07102a; }
+
+/* Trust */
+.trust-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap:12px; }
+.trust-card{ padding:16px; border-radius:12px; }
+
+/* CTA section and footer */
+.cta-section{ padding:36px 0; display:flex; justify-content:center; }
+.cta-inner{ display:flex; align-items:center; gap:20px; justify-content:space-between; padding:20px; }
+.site-footer{ padding:20px; margin-top:24px; }
+.footer-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap:12px; }
+.footer-bottom{ margin-top:12px; font-size:13px; color:#aebbe6; }
+
+/* Animations and reveal */
+.fade-in{ opacity:0; transform:translateY(10px); transition:opacity 520ms ease, transform 520ms ease; }
+.in-view{ opacity:1; transform:none; }
+
+/* Responsive tweaks */
+@media (max-width: 920px){ .hero h1{ font-size:36px; } }
+@media (max-width:720px){ .hero-inner{ flex-direction:column; align-items:flex-start; } .hero { height: calc(var(--header-height) + 260px);} }
+
+/* small utility */
+.nav-link{ letter-spacing:0.2px; }
+
+/* Ensure page content sits below fixed header */
+body {
+    padding-top: var(--header-height);
+}
+
+.page-content { padding: 36px 0; color: #e8eaf6; }
+
+/* Ensure user-entered text is visible: use dark text for inputs and message bodies */
+input, textarea, select, button, .form-input {
+    color: #0b0c1e; /* dark/black text for user input */
+}
+input::placeholder, textarea::placeholder {
+    color: rgba(11,12,30,0.45);
+}
+.message-body, .notification-text, .trade-description {
+    color: #0b0c1e; /* make dynamic/content text dark */
+}
+
+/* If a container uses a light background, prefer dark text by default */
+.glass, .card, .stat, .team-card, .review, .cta-inner, .container {
+    color: #0b0c1e;
+}
+
+/* Utility: force dark text for sections that should show black content */
+.dark-text { color: #0b0c1e !important; }
+
+/* Dark form styles for auth/contact pages so white text is readable */
+.form-dark {
+    background: linear-gradient(180deg,#07102a,#0b1228);
+    padding: 18px;
+    border-radius: 12px;
+    color: #ffffff;
+}
+.form-dark input,
+.form-dark textarea,
+.form-dark select {
+    background: rgba(255,255,255,0.03);
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+.form-dark input::placeholder,
+.form-dark textarea::placeholder {
+    color: rgba(255,255,255,0.6);
+}
+.form-dark .error { color: #ffb4b4; }
+.form-dark .btn-primary { background:#ffcf4d; color:#07102a; }
+
+/* Particles and stat reveal styles */
+.particles-canvas{ z-index: 0; mix-blend-mode: normal; pointer-events: none; }
+.stat-card{ opacity:0; transform: translateY(12px); transition: opacity 420ms ease, transform 420ms ease; }
+.stat-card.reveal{ opacity:1; transform: translateY(0); }

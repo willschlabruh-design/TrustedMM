@@ -1,0 +1,12 @@
+Notes: To enable Socket.io with Next.js dev server you can run a custom server or use a separate Node server.
+
+Example (simple):
+
+const http = require('http');
+const { Server } = require('socket.io');
+const server = http.createServer();
+const io = new Server(server, { cors: { origin: '*' } });
+io.on('connection', socket => { console.log('connected'); });
+server.listen(4000);
+
+Connect from client with socket.io-client to ws://localhost:4000

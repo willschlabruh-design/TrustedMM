@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{ --bg: #081229 }
+html,body,#__next{ height:100%; }
+body{ background:var(--bg); color:#fff; }
+.container{ max-width:1100px; }
+
+/* small helpers */
+.bg-deep{ background: linear-gradient(180deg,#081229,#07112a); }
+
+/* glass card */
+.card-glass{ background:rgba(255,255,255,0.04); border-radius:12px; padding:16px; backdrop-filter: blur(6px); border:1px solid rgba(255,255,255,0.04); }
+
+/* Dark form styles (ensure this is available to Next pages) */
+.form-dark {
+	background: linear-gradient(180deg,#07102a,#0b1228);
+	padding: 18px;
+	border-radius: 12px;
+	color: #ffffff;
+}
+.form-dark input,
+.form-dark textarea,
+.form-dark select {
+	background: rgba(255,255,255,0.03) !important;
+	color: #ffffff !important;
+	border: 1px solid rgba(255,255,255,0.06) !important;
+}
+.form-dark input::placeholder,
+.form-dark textarea::placeholder {
+	color: rgba(255,255,255,0.6) !important;
+}
+.form-dark .error { color: #ffb4b4; }
+.form-dark .btn-primary { background:#ffcf4d; color:#07102a; }
