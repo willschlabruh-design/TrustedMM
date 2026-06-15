@@ -60,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const admins = await prisma.user.findMany({ where: { role: 'ADMIN' } });
   if (admins.length > 0) {
     await prisma.notification.createMany({
-      data: admins.map(admin => ({
+      data: admins.map((admin: any) => ({
         userId: admin.id,
         type: 'middleman_needed',
         payload: JSON.stringify({ tradeId: trade.id, roomId: room.id, buyerName: buyer.username || buyer.email, sellerName: seller.username || seller.email })

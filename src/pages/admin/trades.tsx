@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../../components/Header';
-import Link from 'next/link';
 
 export default function AdminTrades(){
   const [trades, setTrades] = useState<any[]>([]);
@@ -27,7 +26,7 @@ export default function AdminTrades(){
                 <div className="text-sm text-slate-400">Status: {t.status} • Value: {t.value}</div>
               </div>
               <div>
-                <Link href={`/admin/trades/${t.id}`} className="px-3 py-1 bg-accent rounded text-black font-semibold">View</Link>
+                <a href={`/admin/trades/${t.id}`} className="px-3 py-1 bg-accent rounded text-black font-semibold">View</a>
               </div>
             </div>
           ))}

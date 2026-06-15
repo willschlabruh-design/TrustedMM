@@ -41,12 +41,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     // create notifications for other room members
     const members = await prisma.roomMember.findMany({ where: { roomId: id } });
-    const notifs = members.filter(m => m.userId !== userId).map(m => ({ userId: m.userId, type: 'message', payload: JSON.stringify({ roomId: id, messageId: msg.id, senderId: userId }) }));
+    const notifs = members.filter((m: any) => m.userId !== userId).map((m: any) => ({ userId: m.userId, type: 'message', payload: JSON.stringify({ roomId: id, messageId: msg.id, senderId: userId }) }));
     if(notifs.length) await prisma.notification.createMany({ data: notifs });
 
     // Send email to admin members only
     try{
-      const recipientIds = members.filter(m => m.userId !== userId).map(m => m.userId);
+      const recipientIds = members.filter((m: any) => m.userId !== userId).map((m: any) => m.userId);
       const adminUsers = await prisma.user.findMany({ where: { id: { in: recipientIds }, role: 'ADMIN' } });
       const site = process.env.SITE_URL || '';
       for(const admin of adminUsers){

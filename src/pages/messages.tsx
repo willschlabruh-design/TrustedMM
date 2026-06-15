@@ -1,6 +1,5 @@
 import Header from '../components/Header';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 
 export default function Messages(){
   const [rooms, setRooms] = useState<any[]>([]);
@@ -32,7 +31,7 @@ export default function Messages(){
           {loading && <div>Loading...</div>}
           {!loading && rooms.length === 0 && <div className="p-4 bg-white/5 rounded">No conversations yet</div>}
           {rooms.map(r=> (
-            <Link key={r.id} href={`/rooms/${r.id}`} className="block p-4 bg-white/5 rounded hover:bg-white/10">
+            <a key={r.id} href={`/rooms/${r.id}`} className="block p-4 bg-white/5 rounded hover:bg-white/10">
               <div className="flex items-center justify-between">
                 <div>
                   <div className="font-semibold">{r.trade?.title || 'Trade'}</div>
@@ -40,7 +39,7 @@ export default function Messages(){
                 </div>
                 <div className="text-sm text-slate-400">{r.messages?.[0]?.body ? r.messages[0].body.slice(0,40) : ''}</div>
               </div>
-            </Link>
+            </a>
           ))}
         </div>
       </main>

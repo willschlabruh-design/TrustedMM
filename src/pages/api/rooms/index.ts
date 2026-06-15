@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   });
 
   // sort rooms by most recent message (or room createdAt if no messages)
-  rooms.sort((a,b)=>{
+  rooms.sort((a: any, b: any) => {
     const aDate = a.messages?.[0]?.createdAt ? new Date(a.messages[0].createdAt).getTime() : new Date(a.createdAt).getTime();
     const bDate = b.messages?.[0]?.createdAt ? new Date(b.messages[0].createdAt).getTime() : new Date(b.createdAt).getTime();
     return bDate - aDate;

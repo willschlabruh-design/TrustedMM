@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const admins = await prisma.user.findMany({ where: { role: 'ADMIN' } });
   const payload = JSON.stringify({ email, name: name || null, message });
 
-  const creates = admins.map(a => prisma.notification.create({ data: { userId: a.id, type: 'contact_message', payload } }));
+  const creates = admins.map((a: any) => prisma.notification.create({ data: { userId: a.id, type: 'contact_message', payload } }));
   await Promise.all(creates);
 
   // send email to admins for contact messages

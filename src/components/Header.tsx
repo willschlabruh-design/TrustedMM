@@ -1,4 +1,4 @@
-import Link from 'next/link';
+// Note: using plain anchors instead of Next `Link` to remain compatible after dependency upgrades
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
@@ -124,25 +124,25 @@ export default function Header(){
                 </svg>
               )}
             </button>
-            <Link href="/">
+            <a href="/">
               <img src="/api/assets/logo" alt="MiddleMan" className="w-32 h-auto rounded-lg shadow-sm" />
-            </Link>
+            </a>
             <nav className="hidden md:flex gap-3 items-center ml-4">
               {navItems.map(item => {
                 const active = item.href === '/' ? path === '/' : path.startsWith(item.href);
                 return (
-                  <Link
+                  <a
                     key={item.href}
                     href={item.href}
                     className={`${linkBase} ${linkHover} ${active ? linkActive : ''}`}
                     aria-current={active ? 'page' : undefined}
                   >
                     {item.label}
-                  </Link>
+                  </a>
                 );
               })}
               {isAdmin && (
-                <Link href="/admin" className={`${linkBase} ${linkHover} ${path.startsWith('/admin') ? linkActive : ''}`} aria-current={path.startsWith('/admin') ? 'page' : undefined}>Admin</Link>
+                <a href="/admin" className={`${linkBase} ${linkHover} ${path.startsWith('/admin') ? linkActive : ''}`} aria-current={path.startsWith('/admin') ? 'page' : undefined}>Admin</a>
               )}
             </nav>
           </div>
@@ -150,8 +150,8 @@ export default function Header(){
           <div className="flex items-center gap-3">
             {!user && (
               <>
-                <Link href="/login" className="px-3 py-1 rounded">Login</Link>
-                <Link href="/register" className="hidden md:inline bg-white/6 px-3 py-2 rounded text-white hover:bg-white/10 transition">Sign up</Link>
+                <a href="/login" className="px-3 py-1 rounded">Login</a>
+                <a href="/register" className="hidden md:inline bg-white/6 px-3 py-2 rounded text-white hover:bg-white/10 transition">Sign up</a>
               </>
             )}
             {user && (
@@ -161,13 +161,13 @@ export default function Header(){
               </>
             )}
             {user && (
-              <Link href="/dashboard" className="bg-white/10 px-3 py-2 rounded">Dashboard</Link>
+                <a href="/dashboard" className="bg-white/10 px-3 py-2 rounded">Dashboard</a>
             )}
             {/* Primary CTA - require login */}
             <button onClick={() => { if(user) router.push('/create-trade'); else router.push(`/login?next=/create-trade`); }} className="ml-2 bg-accent px-4 py-2 rounded-md text-black font-semibold hover:scale-105 transition-transform">Start Trade</button>
             {user && (
               <>
-                <Link href="/messages" className="relative ml-2">
+                <a href="/messages" className="relative ml-2">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -176,8 +176,8 @@ export default function Header(){
                       {unreadMsgCount > 99 ? '99+' : unreadMsgCount}
                     </span>
                   )}
-                </Link>
-                <Link href="/notifications" className="relative ml-3">
+                  </a>
+                <a href="/notifications" className="relative ml-3">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </svg>
@@ -186,7 +186,7 @@ export default function Header(){
                       {unreadNotifCount > 99 ? '99+' : unreadNotifCount}
                     </span>
                   )}
-                </Link>
+                  </a>
               </>
             )}
           </div>
@@ -198,9 +198,9 @@ export default function Header(){
         <div className={`fixed inset-0 bg-black transition-opacity duration-300 ${open ? 'opacity-40 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={()=>setOpen(false)} />
         <aside className={`fixed top-0 left-0 h-full w-64 bg-white text-black shadow-xl transform transition-transform duration-300 ease-in-out ${open ? 'translate-x-0' : '-translate-x-full'}`}>
           <div className="p-4 flex items-center justify-between border-b">
-            <Link href="/">
+            <a href="/">
               <img src="/api/assets/logo" alt="MiddleMan" className="w-24 h-auto rounded-full" />
-            </Link>
+            </a>
             <button aria-label="Close menu" onClick={()=>setOpen(false)} className="p-2 rounded hover:bg-gray-100">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -211,8 +211,8 @@ export default function Header(){
                 <div className="border-t mt-2 pt-2">
                   {!user && (
                     <>
-                      <Link href="/login" onClick={()=>setOpen(false)} className="block px-3 py-2 rounded hover:bg-gray-100">Login</Link>
-                      <Link href="/register" onClick={()=>setOpen(false)} className="block bg-accent px-3 py-2 rounded text-black font-semibold mt-2">Sign up</Link>
+                      <a href="/login" onClick={()=>setOpen(false)} className="block px-3 py-2 rounded hover:bg-gray-100">Login</a>
+                      <a href="/register" onClick={()=>setOpen(false)} className="block bg-accent px-3 py-2 rounded text-black font-semibold mt-2">Sign up</a>
                     </>
                   )}
                   {user && (
@@ -222,18 +222,18 @@ export default function Header(){
                     </>
                   )}
                   {user && (
-                    <Link href="/dashboard" onClick={()=>setOpen(false)} className={`${linkBaseMobile} mt-3 ${path.startsWith('/dashboard') ? linkActiveMobile : ''}`}>Dashboard</Link>
+                    <a href="/dashboard" onClick={()=>setOpen(false)} className={`${linkBaseMobile} mt-3 ${path.startsWith('/dashboard') ? linkActiveMobile : ''}`}>Dashboard</a>
                   )}
 
                   {isAdmin && (
-                    <Link href="/admin" onClick={()=>setOpen(false)} className={`${linkBaseMobile} mt-2 ${path.startsWith('/admin') ? linkActiveMobile : ''}`}>Admin</Link>
+                    <a href="/admin" onClick={()=>setOpen(false)} className={`${linkBaseMobile} mt-2 ${path.startsWith('/admin') ? linkActiveMobile : ''}`}>Admin</a>
                   )}
 
                   <div className="mt-3">
                     {navItems.map(item => {
                       const active = item.href === '/' ? path === '/' : path.startsWith(item.href);
                       return (
-                        <Link key={item.href} href={item.href} onClick={()=>setOpen(false)} className={`${linkBaseMobile} ${linkHoverMobile} ${active ? linkActiveMobile : ''}`} aria-current={active ? 'page' : undefined}>{item.label}</Link>
+                        <a key={item.href} href={item.href} onClick={()=>setOpen(false)} className={`${linkBaseMobile} ${linkHoverMobile} ${active ? linkActiveMobile : ''}`} aria-current={active ? 'page' : undefined}>{item.label}</a>
                       );
                     })}
                   </div>
