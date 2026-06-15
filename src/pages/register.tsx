@@ -11,12 +11,15 @@ export default function Register(){
   const submit = async (e:any)=>{
     e.preventDefault(); setError(null);
     if(!email || !password || !username) return setError('Email, username and password required');
-    const res = await fetch('/api/auth/register',{ method:'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email, password, username }) });
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ email, password, username }),
+    });
     const data = await res.json();
-    if(!res.ok) return setError(data.error || 'Registration failed');
-    // Registration created. In dev mode the API returns a verifyLink; show instruction to verify.
+    if (!res.ok) return setError(data.error || 'Registration failed');
     alert('Account created. Please check your email and click the verification link to activate your account.');
-    if(data.verifyLink) console.log('Verify link (dev):', data.verifyLink);
     Router.push('/login');
   };
 

@@ -1,32 +1,37 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '../../../lib/prisma';
-import { createVerificationToken } from '../../../lib/auth';
-import { sendVerificationEmail } from '../../../lib/mailer';
+import { getAuthCallbackUrl } from '../../../lib/auth-utils';
+import { createSupabaseApiClient } from '../../../lib/supabase/api';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse){
-  if(req.method !== 'POST') return res.status(405).end();
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') return res.status(405).end();
+
   const { userId, email } = req.body;
-
-  if(!userId && !email) return res.status(400).json({ error: 'Missing userId or email' });
+  if (!userId && !email) return res.status(400).json({ error: 'Missing userId or email' });
 
   let user;
-  if(userId){
+  if (userId) {
     user = await prisma.user.findUnique({ where: { id: userId } });
   } else {
     user = await prisma.user.findUnique({ where: { email } });
   }
 
-  if(!user) return res.status(404).json({ error: 'User not found' });
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  if (user.verified) return res.status(200).json({ ok: true, message: 'Email already verified' });
 
-  // Generate new token
-  const token = await createVerificationToken(user.id, 'email_verification', 48);
-  const verifyLink = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/auth/verify-email?token=${token}`;
+  const supabase = createSupabaseApiClient(req, res);
+  if (!supabase) return res.status(500).json({ error: 'Auth not configured' });
 
-  // Send email
-  try{
-    await sendVerificationEmail(user.email, verifyLink);
-  } catch(e){
-    console.error('Failed to send verification email:', e);
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email: user.email,
+    options: {
+      emailRedirectTo: getAuthCallbackUrl(),
+    },
+  });
+
+  if (error) {
+    console.error('Failed to resend verification email:', error);
     return res.status(500).json({ error: 'Failed to send email' });
   }
 

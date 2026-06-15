@@ -19,6 +19,27 @@ async function uniqueUsername(email: string, preferred?: string) {
   return username;
 }
 
+type CreateProfileInput = {
+  id: string;
+  email: string;
+  username: string;
+  verified?: boolean;
+  role?: string;
+};
+
+export async function createPrismaProfile(input: CreateProfileInput) {
+  return prisma.user.create({
+    data: {
+      id: input.id,
+      email: input.email,
+      username: input.username,
+      password: '',
+      verified: input.verified ?? false,
+      role: input.role ?? 'USER',
+    },
+  });
+}
+
 export async function ensurePrismaProfile(supabaseUser: SupabaseUser) {
   const email = supabaseUser.email ?? '';
   const metadata = supabaseUser.user_metadata ?? {};
@@ -39,5 +60,21 @@ export async function ensurePrismaProfile(supabaseUser: SupabaseUser) {
       email,
       verified: !!supabaseUser.email_confirmed_at,
     },
+  });
+}
+
+export async function syncVerifiedFromSupabase(supabaseUser: SupabaseUser) {
+  const existing = await prisma.user.findUnique({ where: { id: supabaseUser.id } });
+  if (!existing) {
+    return ensurePrismaProfile(supabaseUser);
+  }
+
+  if (!supabaseUser.email_confirmed_at) {
+    return existing;
+  }
+
+  return prisma.user.update({
+    where: { id: supabaseUser.id },
+    data: { verified: true },
   });
 }

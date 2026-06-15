@@ -1,19 +1,24 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../../lib/prisma';
-import { hashPassword } from '../../../lib/auth';
+import { createSupabaseApiClient } from '../../../lib/supabase/api';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse){
-  if(req.method !== 'POST') return res.status(405).end();
-  const { token, password } = req.body;
-  if(!token || !password) return res.status(400).json({ error: 'Missing' });
-  const record = await prisma.verificationToken.findUnique({ where: { token } });
-  if(!record || record.type !== 'password_reset') return res.status(400).json({ error: 'Invalid token' });
-  if(record.expiresAt < new Date()){
-    await prisma.verificationToken.delete({ where: { id: record.id } });
-    return res.status(410).json({ error: 'Expired' });
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') return res.status(405).end();
+
+  const { password } = req.body;
+  if (!password) return res.status(400).json({ error: 'Missing password' });
+
+  const supabase = createSupabaseApiClient(req, res);
+  if (!supabase) return res.status(500).json({ error: 'Auth not configured' });
+
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user) {
+    return res.status(401).json({ error: 'Invalid or expired reset session. Please request a new reset link.' });
   }
-  const hashed = await hashPassword(password);
-  await prisma.user.update({ where: { id: record.userId }, data: { password: hashed } });
-  await prisma.verificationToken.deleteMany({ where: { userId: record.userId, type: 'password_reset' } });
+
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) {
+    return res.status(400).json({ error: error.message || 'Failed to reset password' });
+  }
+
   return res.status(200).json({ ok: true });
 }

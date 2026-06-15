@@ -1,18 +1,39 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../../lib/prisma';
+import { getAppUrl } from '../../../lib/auth-utils';
+import { syncVerifiedFromSupabase } from '../../../lib/profile-sync';
+import { createSupabaseApiClient } from '../../../lib/supabase/api';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse){
-  const { token } = req.query;
-  const _redirect = (url: string) => { res.setHeader('Location', url); return res.status(302).end(); };
-  if(!token || typeof token !== 'string') return _redirect(`/?error=Missing+token`);
-  const record = await prisma.verificationToken.findUnique({ where: { token } });
-  if(!record) return _redirect(`/?error=Invalid+token`);
-  if(record.expiresAt < new Date()){
-    await prisma.verificationToken.delete({ where: { id: record.id } });
-    return _redirect(`/?error=Token+expired`);
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const redirect = (url: string) => {
+    res.setHeader('Location', url);
+    return res.status(302).end();
+  };
+
+  const appUrl = getAppUrl();
+  const supabase = createSupabaseApiClient(req, res);
+  if (!supabase) return redirect(`${appUrl}/?error=Auth+not+configured`);
+
+  const { code } = req.query;
+  if (typeof code === 'string') {
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (error) return redirect(`${appUrl}/?error=Invalid+verification+link`);
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await syncVerifiedFromSupabase(user);
+      return redirect(`${appUrl}/?success=Email+verified`);
+    }
   }
-  if(record.type !== 'email_verification') return _redirect(`/?error=Wrong+token+type`);
-  await prisma.user.update({ where: { id: record.userId }, data: { verified: true } });
-  await prisma.verificationToken.delete({ where: { id: record.id } });
-  return _redirect(`/?success=Email+verified`);
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    await syncVerifiedFromSupabase(user);
+    return redirect(`${appUrl}/?success=Email+verified`);
+  }
+
+  if (req.query.token) {
+    return redirect(`${appUrl}/?error=Verification+link+expired.+Please+request+a+new+one`);
+  }
+
+  return redirect(`${appUrl}/login`);
 }

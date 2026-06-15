@@ -55,7 +55,7 @@ export default function Dashboard(){
                 if(!confirm('Delete your account? This will anonymize your data and cannot be undone.')) return;
                 try{
                   const r = await fetch('/api/account/delete', { method: 'POST' });
-                  if(r.ok){ await fetch('/api/auth/logout', { method: 'POST' }); window.location.href = '/'; }
+                  if(r.ok){ await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }); window.location.href = '/'; }
                   else { const j = await r.json(); alert('Failed: ' + (j.error || r.statusText)); }
                 }catch(e){ alert('Failed to delete account'); }
               }} className="border border-red-600 text-red-600 px-4 py-2 rounded">Delete account</button>

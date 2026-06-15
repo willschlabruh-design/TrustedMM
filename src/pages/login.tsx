@@ -18,7 +18,12 @@ export default function Login(){
     let res;
     let data: any = {};
     try{
-      res = await fetch('/api/auth/login',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password }) });
+      res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ email, password }),
+      });
       data = await res.json();
     }catch(err){
       console.error('Network error during login', err);

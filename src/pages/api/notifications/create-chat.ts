@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { requireAuth } from '../_helpers/requireAuth';
 import { prisma } from '../../../lib/prisma';
-import { hashPassword } from '../../../lib/auth';
+import { createGuestPrismaUser } from '../../../lib/guest-user';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse){
   try{
@@ -26,14 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // find or create user for sender
     let user = await prisma.user.findUnique({ where: { email } });
     if(!user){
-      // generate a username based on email
-      const base = email.split('@')[0].replace(/[^a-z0-9_-]/gi,'').slice(0,12) || 'guest';
-      let username = base;
-      let suffix = 0;
-      while(await prisma.user.findUnique({ where: { username } })){ suffix++; username = `${base}${suffix}`; }
-      const pw = Math.random().toString(36).slice(2,12) || 'changeme';
-      const hashed = await hashPassword(pw);
-      user = await prisma.user.create({ data: { email, username, password: hashed } });
+      user = await createGuestPrismaUser(email);
     }
 
     // create room and add members (admin and sender)

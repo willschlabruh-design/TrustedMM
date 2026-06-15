@@ -24,6 +24,16 @@ export default function AuthCallback() {
           if (sessionError) throw sessionError;
         }
 
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          throw new Error('No active session found');
+        }
+
+        await fetch('/api/auth/sync-profile', {
+          method: 'POST',
+          credentials: 'same-origin',
+        });
+
         if (!mounted) return;
         await router.replace('/dashboard');
       } catch (err: any) {
