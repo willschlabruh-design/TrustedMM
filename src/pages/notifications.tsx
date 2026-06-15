@@ -4,12 +4,19 @@ import { useEffect, useState } from 'react';
 export default function Notifications(){
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
   async function fetchNotifs(){
     try{ const r = await fetch('/api/notifications', { credentials: 'same-origin' }); if(!r.ok) return; const j = await r.json(); setNotifications(j.notifications || []); }catch(e){}
   }
 
   useEffect(()=>{ fetchNotifs(); }, []);
+
+  useEffect(()=>{
+    let mounted = true;
+    fetch('/api/auth/me').then(r=>r.json()).then(j=>{ if(!mounted) return; setUser(j.user ?? null); }).catch(()=>{});
+    return ()=>{ mounted = false };
+  },[]);
 
   async function markRead(id:string){
     // optimistic UI: remove notification immediately
@@ -112,6 +119,10 @@ export default function Notifications(){
               );
             }
 
+            if(n.type === 'middleman_needed'){
+              return <MiddlemanNotification key={n.id} n={n} payload={payload} when={when} markRead={markRead} />;
+            }
+
             if(n.type === 'trade_completed'){
               const tradeId = payload.tradeId || payload.tradeid || payload.tradeID;
               return (
@@ -136,7 +147,7 @@ export default function Notifications(){
               <div key={n.id} className={`p-4 rounded ${n.read? 'bg-white/3' : 'bg-white/6'}`}>
                 <div className="flex justify-between items-start gap-4">
                   <div>
-                    <div className="font-semibold">{n.type.replace(/_/g,' ').replace(/\b\w/g, l=>l.toUpperCase())}</div>
+                    <div className="font-semibold">{n.type.replace(/_/g,' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}</div>
                     <div className="text-sm text-slate-400 mt-1">{typeof n.payload === 'string' ? n.payload.slice(0,200) : JSON.stringify(payload).slice(0,200)}</div>
                     <div className="text-xs text-slate-500 mt-2">Received: {when}</div>
                   </div>
@@ -150,5 +161,65 @@ export default function Notifications(){
         </div>
       </main>
     </>
+  );
+}
+
+function MiddlemanNotification({ n, payload, when, markRead } : any){
+  const [loading, setLoading] = useState(false);
+  const [trade, setTrade] = useState<any>(null);
+
+  useEffect(()=>{
+    let mounted = true;
+    (async ()=>{
+      try{
+        const id = payload.tradeId || payload.tradeid;
+        if(!id) return;
+        const r = await fetch(`/api/admin/trades/${id}`, { credentials: 'same-origin' });
+        if(!mounted) return;
+        if(r.ok){ const j = await r.json(); setTrade(j.trade); }
+      }catch(e){ }
+    })();
+    return ()=>{ mounted = false };
+  },[payload]);
+
+  useEffect(()=>{
+    if(trade && trade.middlemanId){
+      // auto-dismiss the notification if trade already assigned
+      try{ markRead(n.id); }catch(e){}
+    }
+  },[trade]);
+
+  return (
+    <div className={`p-4 rounded ${n.read? 'bg-white/3' : 'bg-white/6'}`}>
+      <div className="flex justify-between items-start gap-4">
+        <div>
+          <div className="font-semibold">Middleman requested</div>
+          <div className="text-sm text-slate-400 mt-1">{payload.tradeId ? `Trade ID: ${payload.tradeId}` : 'A trade needs a middleman.'}</div>
+          <div className="text-xs text-slate-500 mt-2">Received: {when}</div>
+          {trade && trade.middlemanId && (
+            <div className="text-sm text-white/70 mt-2">Already assigned: {trade.middleman?.username || trade.middlemanId}</div>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          <button disabled={loading} onClick={()=>{ markRead(n.id); }} className="px-3 py-1 bg-red-600 text-white rounded">Dismiss</button>
+          {payload.roomId && <button disabled={loading} onClick={()=>{ window.location.href = `/rooms/${payload.roomId}`; }} className="px-3 py-1 bg-green-600 text-white rounded">Open Chat</button>}
+          {payload.tradeId && <button disabled={loading} onClick={()=>{ window.location.href = `/trades/${payload.tradeId}`; }} className="px-3 py-1 bg-white/5 text-white rounded">View Trade</button>}
+          {/* Accept only if trade not assigned yet */}
+          {!trade && <div className="text-sm text-slate-500">Checking trade...</div>}
+          {trade && !trade.middlemanId && (
+            <button disabled={loading} onClick={async ()=>{
+              setLoading(true);
+              try{
+                const r = await fetch('/api/trades/accept-middleman', { method: 'POST', credentials: 'same-origin', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ tradeId: payload.tradeId }) });
+                const j = await r.json().catch(()=>({}));
+                if(r.ok){ alert('You are now the middleman for this trade'); markRead(n.id); window.location.href = `/trades/${payload.tradeId}`; return; }
+                alert('Error: ' + (j.error || r.statusText || 'Unable to accept') + (j.trade ? '\n\n' + JSON.stringify(j.trade, null, 2) : ''));
+              }catch(e){ alert('Network error'); }
+              setLoading(false);
+            }} className="px-3 py-1 bg-blue-600 text-white rounded">Accept</button>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

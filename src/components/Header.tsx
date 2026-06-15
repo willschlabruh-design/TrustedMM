@@ -108,8 +108,8 @@ export default function Header(){
 
   return (
     <>
-      {/* Top bar: small on mobile, full header on desktop */}
-      <header className="bg-gradient-to-r from-primary to-indigo-500 fixed top-0 left-0 right-0 z-50">
+      {/* Top bar: sticky glass header with blur */}
+      <header className="site-header fixed top-0 left-0 right-0 z-50">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {/* Mobile menu button (toggles open/close) */}
@@ -125,7 +125,7 @@ export default function Header(){
               )}
             </button>
             <Link href="/">
-              <img src="/api/assets/logo" alt="MiddleMan" className="w-10 h-10 rounded-full" />
+              <img src="/api/assets/logo" alt="MiddleMan" className="w-32 h-auto rounded-lg shadow-sm" />
             </Link>
             <nav className="hidden md:flex gap-3 items-center ml-4">
               {navItems.map(item => {
@@ -151,7 +151,7 @@ export default function Header(){
             {!user && (
               <>
                 <Link href="/login" className="px-3 py-1 rounded">Login</Link>
-                <Link href="/register" className="bg-accent px-3 py-2 rounded text-black font-semibold">Sign up</Link>
+                <Link href="/register" className="hidden md:inline bg-white/6 px-3 py-2 rounded text-white hover:bg-white/10 transition">Sign up</Link>
               </>
             )}
             {user && (
@@ -163,6 +163,8 @@ export default function Header(){
             {user && (
               <Link href="/dashboard" className="bg-white/10 px-3 py-2 rounded">Dashboard</Link>
             )}
+            {/* Primary CTA - require login */}
+            <button onClick={() => { if(user) router.push('/create-trade'); else router.push(`/login?next=/create-trade`); }} className="ml-2 bg-accent px-4 py-2 rounded-md text-black font-semibold hover:scale-105 transition-transform">Start Trade</button>
             {user && (
               <>
                 <Link href="/messages" className="relative ml-2">
@@ -192,12 +194,12 @@ export default function Header(){
       </header>
 
       {/* Mobile sidebar overlay */}
-      <div className="fixed inset-0 z-40 md:hidden">
+      <div className={`fixed inset-0 z-40 md:hidden ${open ? 'pointer-events-auto' : 'pointer-events-none'}`}>
         <div className={`fixed inset-0 bg-black transition-opacity duration-300 ${open ? 'opacity-40 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={()=>setOpen(false)} />
         <aside className={`fixed top-0 left-0 h-full w-64 bg-white text-black shadow-xl transform transition-transform duration-300 ease-in-out ${open ? 'translate-x-0' : '-translate-x-full'}`}>
           <div className="p-4 flex items-center justify-between border-b">
             <Link href="/">
-              <img src="/api/assets/logo" alt="MiddleMan" className="w-10 h-10 rounded-full" />
+              <img src="/api/assets/logo" alt="MiddleMan" className="w-24 h-auto rounded-full" />
             </Link>
             <button aria-label="Close menu" onClick={()=>setOpen(false)} className="p-2 rounded hover:bg-gray-100">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -1,34 +1,53 @@
-import Particles from './Particles';
+import DashboardPreview from './DashboardPreview';
+import { useRouter } from 'next/router';
+import { useCallback } from 'react';
 
 export default function Hero(){
+  const router = useRouter();
+  const handleStartTrade = useCallback(async (e:any) => {
+    e?.preventDefault?.();
+    try{
+      const r = await fetch('/api/auth/me', { credentials: 'same-origin' });
+      if(r.ok){ const j = await r.json(); if(j?.user){ router.push('/create-trade'); return; } }
+    }catch(e){}
+    router.push('/login?next=/create-trade');
+  }, [router]);
   return (
-    <section className="relative pt-36 pb-20 overflow-hidden">
-      <Particles />
-      <div className="container mx-auto px-6 flex flex-col md:flex-row items-center gap-8 relative z-50">
-        <div className="flex-1">
-               <img src="/api/assets/logo" alt="MiddleMan logo" className="w-20 h-20 rounded-full mb-4 shadow-md" />
-            <h1 className="text-5xl font-extrabold">Secure Trades. Trusted Every Time.</h1>
-          <p className="mt-4 text-slate-200 max-w-xl">We safely hold digital assets until both parties complete their agreement.</p>
-          <div className="mt-6 flex gap-4">
-            {/* Middleman functionality removed — platform uses fixed admins/middlemen */}
+    <section className="relative pt-28 pb-20 overflow-hidden bg-animated-gradient">
+      <div className="container mx-auto px-6 flex flex-col md:flex-row items-center gap-8 relative z-20">
+        <div className="flex-1 max-w-2xl">
+          <img src="/api/assets/logo" alt="Trusted logo" className="w-16 h-16 rounded-lg mb-4" />
+          <h1 className="text-5xl font-extrabold leading-tight">Trade Safely. Every Time.</h1>
+          <p className="mt-4 text-slate-200 text-lg max-w-xl">Trusted acts as a secure middleman for digital asset transactions, protecting both buyers and sellers until the deal is complete.</p>
+
+          <div className="mt-6 flex flex-wrap gap-3">
+            <button onClick={handleStartTrade} className="bg-accent px-5 py-3 rounded-md font-semibold text-black hover:scale-105 transition">Start Trade</button>
+            <a href="#how" className="px-5 py-3 rounded-md border border-white/6 hover:bg-white/6 transition">Learn More</a>
+          </div>
+
+          <div className="mt-6 grid grid-cols-2 gap-3 max-w-sm">
+            <div className="flex items-center gap-3 text-sm">
+              <span className="text-green-400">✓</span>
+              <span>Secure Escrow</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <span className="text-green-400">✓</span>
+              <span>Verified Middlemen</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <span className="text-green-400">✓</span>
+              <span>Fast Dispute Resolution</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <span className="text-green-400">✓</span>
+              <span>Thousands of Successful Trades</span>
+            </div>
           </div>
         </div>
+
         <div className="flex-1">
-          <div id="hero-float" className="w-full h-64 rounded-xl bg-gradient-to-br from-primary/30 to-indigo-900/30 flex items-center justify-center shadow-lg">
-            <svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#6b78ff" />
-                  <stop offset="100%" stopColor="#ffcf4d" />
-                </linearGradient>
-              </defs>
-              <rect width="220" height="220" rx="20" fill="url(#g1)" opacity="0.12" />
-              <g transform="translate(36,36)">
-                <circle cx="74" cy="30" r="22" fill="#fff" opacity="0.06" />
-                <rect x="0" y="70" width="148" height="28" rx="6" fill="#fff" opacity="0.06" />
-                <rect x="0" y="110" width="110" height="18" rx="6" fill="#fff" opacity="0.04" />
-              </g>
-            </svg>
+          <div className="dashboard-card shadow-lg">
+            <DashboardPreview />
           </div>
         </div>
       </div>

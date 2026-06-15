@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     include: {
       trade: true,
       members: { include: { user: true } },
-      messages: { include: { sender: true }, orderBy: { createdAt: 'asc' } }
+      messages: { include: { sender: true, attachments: true }, orderBy: { createdAt: 'asc' } }
     }
   });
 

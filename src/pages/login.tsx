@@ -7,11 +7,13 @@ export default function Login(){
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [requiresVerification, setRequiresVerification] = useState(false);
+  const [requiresEmailVerification, setRequiresEmailVerification] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [sending, setSending] = useState(false);
 
   const submit = async (e:any)=>{
-    e.preventDefault(); setError(null); setRequiresVerification(false);
+    e.preventDefault(); setError(null); setRequiresVerification(false); setRequiresEmailVerification(false);
     const res = await fetch('/api/auth/login',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password }) });
     const data = await res.json();
     if(!res.ok){
@@ -19,12 +21,36 @@ export default function Login(){
         setRequiresVerification(true);
         setUserId(data.userId);
         setError(data.error);
+      } else if(res.status === 403 && data.requiresEmailVerification){
+        setRequiresEmailVerification(true);
+        setUserId(data.userId);
+        setIsAdmin(data.isAdmin || false);
+        setError(data.error);
+        // Auto-send admin verification email
+        await sendAdminVerification(data.userId);
       } else {
         setError(data.error || 'Login failed');
       }
       return;
     }
     Router.push('/dashboard');
+  };
+
+  const sendAdminVerification = async (userId: string)=>{
+    setSending(true);
+    try{
+      const res = await fetch('/api/auth/admin-login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ userId }) });
+      const data = await res.json();
+      if(res.ok){
+        setSending(false);
+      } else {
+        setError('Error: ' + (data.error || 'Failed to send verification email'));
+        setSending(false);
+      }
+    } catch(e){
+      setError('Network error');
+      setSending(false);
+    }
   };
 
   const resendVerification = async ()=>{
@@ -44,6 +70,11 @@ export default function Login(){
     setSending(false);
   };
 
+  const resendAdminVerification = async ()=>{
+    if(!userId) return;
+    await sendAdminVerification(userId);
+  };
+
   return (
     <>
       <Header />
@@ -52,15 +83,40 @@ export default function Login(){
           <div className="form-dark">
           <h1 className="text-2xl font-bold mb-4">Sign in</h1>
           <form onSubmit={submit} className="space-y-3">
-            <input className="w-full p-3 rounded" placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />
-            <input type="password" className="w-full p-3 rounded" placeholder="Password" value={password} onChange={e=>setPassword(e.target.value)} />
-            {error && <div className={`p-3 rounded ${requiresVerification ? 'bg-yellow-900/30 text-yellow-200 border border-yellow-600' : 'error'}`}>{error}</div>}
+            <input className="w-full p-3 rounded" placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} disabled={requiresVerification || requiresEmailVerification} />
+            <input type="password" className="w-full p-3 rounded" placeholder="Password" value={password} onChange={e=>setPassword(e.target.value)} disabled={requiresVerification || requiresEmailVerification} />
+            {error && (
+              <div className={`p-3 rounded ${
+                requiresVerification || requiresEmailVerification 
+                  ? 'bg-yellow-900/30 text-yellow-200 border border-yellow-600' 
+                  : 'bg-red-900/30 text-red-200 border border-red-600'
+              }`}>
+                {error}
+              </div>
+            )}
             {requiresVerification && (
-              <button type="button" onClick={resendVerification} disabled={sending} className="w-full px-4 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700">
+              <button type="button" onClick={resendVerification} disabled={sending} className="w-full px-4 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-50">
                 {sending ? 'Sending...' : 'Resend Verification Email'}
               </button>
             )}
-            <button className="btn-primary px-4 py-2 rounded w-full">Sign in</button>
+            {requiresEmailVerification && isAdmin && (
+              <div className="space-y-3">
+                <p className="text-sm text-gray-300">
+                  Admin accounts require email verification. Check your inbox for a verification link to complete login.
+                </p>
+                <button 
+                  type="button" 
+                  onClick={resendAdminVerification} 
+                  disabled={sending} 
+                  className="w-full px-4 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {sending ? 'Sending...' : 'Resend Admin Verification Email'}
+                </button>
+              </div>
+            )}
+            {!requiresVerification && !requiresEmailVerification && (
+              <button className="btn-primary px-4 py-2 rounded w-full">Sign in</button>
+            )}
           </form>
           </div>
         </div>

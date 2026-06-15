@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '../../../lib/prisma';
+import { sendEmail } from '../../../lib/mailer';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -12,11 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const seller = await prisma.user.findFirst({ where: { username: sellerUsername } });
   if (!buyer || !seller) return res.status(400).json({ error: 'Both buyer and seller must have accounts' });
 
-  // Find any user with the ADMIN role to act as platform middleman (roles merged)
-  const middleman = await prisma.user.findFirst({ where: { role: 'ADMIN' } });
-  if (!middleman) return res.status(500).json({ error: 'Platform middleman account not configured' });
-
-  // Create trade
+  // Create trade WITHOUT assigning a middleman yet
   const trade = await prisma.trade.create({
     data: {
       title,
@@ -24,17 +21,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       value: value ? Number(value) : 0,
       buyerId: buyer.id,
       sellerId: seller.id,
-      middlemanId: middleman.id,
+      status: 'WAITING_FOR_MIDDLEMEN'
     }
   });
 
-  // Create a message room and add members (middleman + buyer + seller)
+  // Create a message room with buyer + seller (no middleman yet)
   const room = await prisma.room.create({
     data: {
       tradeId: trade.id,
       members: {
         create: [
-          { userId: middleman.id },
           { userId: buyer.id },
           { userId: seller.id }
         ]
@@ -47,8 +43,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   await prisma.message.create({
     data: {
       roomId: room.id,
-      senderId: middleman.id,
-      body: `Room created for trade ${trade.title}. Participants: ${middleman.username || middleman.email}, ${buyer.username || buyer.email}, ${seller.username || seller.email}`
+      senderId: buyer.id,
+      body: `Room created for trade "${trade.title}". Waiting for middleman to join...`
     }
   });
 
@@ -60,10 +56,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ]
   });
 
-  // Notify the platform middleman explicitly
-  try{
-    await prisma.notification.create({ data: { userId: middleman.id, type: 'trade_assigned', payload: JSON.stringify({ tradeId: trade.id, roomId: room.id }) } });
-  }catch(e){ /* ignore */ }
+  // Notify ALL admins that a middleman is needed
+  const admins = await prisma.user.findMany({ where: { role: 'ADMIN' } });
+  if (admins.length > 0) {
+    await prisma.notification.createMany({
+      data: admins.map(admin => ({
+        userId: admin.id,
+        type: 'middleman_needed',
+        payload: JSON.stringify({ tradeId: trade.id, roomId: room.id, buyerName: buyer.username || buyer.email, sellerName: seller.username || seller.email })
+      }))
+    });
+    // send email alerts to admins
+    try{
+      const site = process.env.SITE_URL || '';
+      for(const admin of admins){
+        try{
+          const link = `${site}/trades/${trade.id}`;
+          const subject = `Middleman needed for trade #${trade.id}`;
+          const html = `<p>A new trade requires a middleman.</p><p>Trade: <a href="${link}">#${trade.id}</a></p><p>Buyer: ${buyer.username || buyer.email}<br/>Seller: ${seller.username || seller.email}</p><p><a href="${link}">View trade</a></p>`;
+          await sendEmail(admin.email, subject, html, `Middleman needed for trade #${trade.id}`);
+        }catch(e){ console.error('failed to send admin email for middleman_needed', e); }
+      }
+    }catch(e){ console.error('failed sending admin emails for middleman notifications', e); }
+  }
 
   return res.status(201).json({ trade, roomId: room.id });
 }
