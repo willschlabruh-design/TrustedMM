@@ -14,8 +14,17 @@ export default function Login(){
 
   const submit = async (e:any)=>{
     e.preventDefault(); setError(null); setRequiresVerification(false); setRequiresEmailVerification(false);
-    const res = await fetch('/api/auth/login',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password }) });
-    const data = await res.json();
+    console.log('Submitting login for', email);
+    let res;
+    let data: any = {};
+    try{
+      res = await fetch('/api/auth/login',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password }) });
+      data = await res.json();
+    }catch(err){
+      console.error('Network error during login', err);
+      setError('Network error — please try again');
+      return;
+    }
     if(!res.ok){
       if(res.status === 403 && data.requiresVerification){
         setRequiresVerification(true);
@@ -115,7 +124,7 @@ export default function Login(){
               </div>
             )}
             {!requiresVerification && !requiresEmailVerification && (
-              <button className="btn-primary px-4 py-2 rounded w-full">Sign in</button>
+              <button type="submit" className="btn-primary px-4 py-2 rounded w-full">Sign in</button>
             )}
           </form>
           </div>
