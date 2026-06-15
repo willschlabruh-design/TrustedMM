@@ -12,7 +12,7 @@ async function updateVercelEnv() {
   const projectId = 'website';
   const teamId = 'willschla';
   const envKey = 'DATABASE_URL';
-  const newValue = 'postgresql://postgres:7HFZoc5EMbMxU8Zu@db.awqglpvcwzblvesmmpkv.supabase.co:5432/postgres?sslmode=require';
+  const newValue = 'file:./prisma/dev.db';
   const environment = 'production';
 
   // Try to get auth token from environment
