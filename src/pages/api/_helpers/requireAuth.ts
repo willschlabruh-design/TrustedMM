@@ -1,7 +1,7 @@
 import { getUserFromRequest } from '../../../lib/session';
 
 export async function requireAuth(req:any, res:any){
-  const ctx = await getUserFromRequest(req);
+  const ctx = await getUserFromRequest(req, res);
   if(!ctx || !ctx.user) { res.status(401).json({ error: 'Unauthorized' }); return null; }
   return ctx;
 }

@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String              @id @default(cuid())
+  email              String              @unique
+  password           String
+  username           String              @unique
+  name               String?
+  avatarUrl          String?
+  role               String              @default("USER")
+  verified           Boolean             @default(false)
+  twoFA              Boolean             @default(false)
+  twoFASecret        String?
+  rating             Float               @default(0)
+  createdAt          DateTime            @default(now())
+  disputesOpened     Dispute[]
+  uploadedFiles      File[]
+  messages           Message[]
+  notifications      Notification[]
+  reviews            Review[]
+  roomMemberships    RoomMember[]
+  sessions           Session[]
+  staffApp           StaffApplication?
+  tradesAsMiddleman  Trade[]             @relation("middleman")
+  tradesAsSeller     Trade[]             @relation("seller")
+  tradesAsBuyer      Trade[]             @relation("buyer")
+  verificationTokens VerificationToken[]
+}
+
+model Trade {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  platform    String?
+  value       Float     @default(0)
+  status      String    @default("WAITING_FOR_MIDDLEMEN")
+  buyerId     String?
+  sellerId    String?
+  middlemanId String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  disputes    Dispute[]
+  files       File[]
+  messages    Message[]
+  reviews     Review[]
+  rooms       Room[]
+  middleman   User?     @relation("middleman", fields: [middlemanId], references: [id])
+  seller      User?     @relation("seller", fields: [sellerId], references: [id])
+  buyer       User?     @relation("buyer", fields: [buyerId], references: [id])
+
+  @@index([status])
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  tradeId     String?
+  roomId      String?
+  senderId    String
+  body        String
+  createdAt   DateTime @default(now())
+  attachments File[]   @relation("messageFiles")
+  sender      User     @relation(fields: [senderId], references: [id])
+  room        Room?    @relation(fields: [roomId], references: [id])
+  trade       Trade?   @relation(fields: [tradeId], references: [id])
+}
+
+model Room {
+  id        String       @id @default(cuid())
+  tradeId   String?
+  createdAt DateTime     @default(now())
+  messages  Message[]
+  trade     Trade?       @relation(fields: [tradeId], references: [id])
+  members   RoomMember[]
+}
+
+model RoomMember {
+  id       String   @id @default(cuid())
+  roomId   String
+  userId   String
+  joinedAt DateTime @default(now())
+  user     User     @relation(fields: [userId], references: [id])
+  room     Room     @relation(fields: [roomId], references: [id])
+
+  @@unique([roomId, userId])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  authorId  String
+  tradeId   String?
+  rating    Int
+  text      String?
+  createdAt DateTime @default(now())
+  trade     Trade?   @relation(fields: [tradeId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  payload   String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([token])
+}
+
+model File {
+  id           String   @id @default(cuid())
+  url          String
+  filename     String
+  size         Int
+  mime         String
+  uploadedById String?
+  tradeId      String?
+  messageId    String?
+  createdAt    DateTime @default(now())
+  message      Message? @relation("messageFiles", fields: [messageId], references: [id])
+  trade        Trade?   @relation(fields: [tradeId], references: [id])
+  uploadedBy   User?    @relation(fields: [uploadedById], references: [id])
+}
+
+model Dispute {
+  id         String   @id @default(cuid())
+  tradeId    String
+  openedById String
+  status     String   @default("OPEN")
+  reason     String
+  resolution String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  openedBy   User     @relation(fields: [openedById], references: [id])
+  trade      Trade    @relation(fields: [tradeId], references: [id])
+}
+
+model StaffApplication {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  bio         String
+  status      String   @default("PENDING")
+  submittedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model Log {
+  id        String   @id @default(cuid())
+  level     String
+  message   String
+  meta      String?
+  createdAt DateTime @default(now())
+}
+
+model VerificationToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  type      String
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([token])
+}
