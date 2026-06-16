@@ -3,19 +3,46 @@ import { prisma } from '../../../lib/prisma';
 import { createSupabaseApiClient } from '../../../lib/supabase/api';
 import { ensurePrismaProfile } from '../../../lib/profile-sync';
 
+const UNVERIFIED_MESSAGE =
+  'You have not confirmed your email address yet. Please verify your email before logging in.';
+
+function isEmailNotConfirmedError(message?: string) {
+  if (!message) return false;
+  const lower = message.toLowerCase();
+  return lower.includes('email not confirmed') || lower.includes('not verified');
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end();
 
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Missing' });
 
+  const normalizedEmail = String(email).trim().toLowerCase();
+
   const supabase = createSupabaseApiClient(req, res);
   if (!supabase) return res.status(500).json({ error: 'Auth not configured' });
 
-  const prismaUser = await prisma.user.findUnique({ where: { email } });
+  const prismaUser = await prisma.user.findUnique({ where: { email: normalizedEmail } });
 
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: normalizedEmail,
+    password,
+  });
+
   if (error || !data.user || !data.session) {
+    const unverifiedAccount =
+      (prismaUser && !prismaUser.verified) || isEmailNotConfirmedError(error?.message);
+
+    if (unverifiedAccount && prismaUser) {
+      return res.status(403).json({
+        error: UNVERIFIED_MESSAGE,
+        requiresVerification: true,
+        userId: prismaUser.id,
+        email: prismaUser.email,
+      });
+    }
+
     return res.status(401).json({ error: 'Invalid credentials' });
   }
 
@@ -28,9 +55,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!isVerified) {
     await supabase.auth.signOut();
     return res.status(403).json({
-      error: 'Email not verified',
+      error: UNVERIFIED_MESSAGE,
       requiresVerification: true,
       userId: profile.id,
+      email: profile.email,
     });
   }
 

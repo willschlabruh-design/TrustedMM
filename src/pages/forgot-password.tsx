@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Header from '../components/Header';
-import { createBrowserClient } from '../lib/supabase/browser';
-import { getClientResetPasswordUrl, isValidEmail, mapAuthError } from '../lib/password-reset';
+import { isValidEmail, mapAuthError } from '../lib/password-reset';
 
 const SUCCESS_MESSAGE =
   'If an account exists for that email, a reset link has been sent.';
@@ -31,17 +30,24 @@ export default function ForgotPassword() {
     setSending(true);
 
     try {
-      const supabase = createBrowserClient();
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(trimmed, {
-        redirectTo: getClientResetPasswordUrl(),
+      const res = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ email: trimmed }),
       });
 
-      if (resetError) {
-        console.error('Forgot password error:', resetError);
-        if (resetError.message?.toLowerCase().includes('invalid') && resetError.message?.toLowerCase().includes('email')) {
-          setError('Please enter a valid email address.');
-          return;
-        }
+      let data: { error?: string; message?: string } = {};
+      try {
+        data = await res.json();
+      } catch {
+        setError('Server error — please try again.');
+        return;
+      }
+
+      if (!res.ok) {
+        setError(data.error || mapAuthError(undefined, 'forgot'));
+        return;
       }
 
       setSuccess(true);

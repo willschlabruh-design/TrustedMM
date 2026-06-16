@@ -1,4 +1,5 @@
 import type { User as SupabaseUser } from '@supabase/supabase-js';
+import { resolveAdminRole } from './admin-grant';
 import { prisma } from './prisma';
 
 function baseUsernameFromEmail(email: string) {
@@ -28,6 +29,8 @@ type CreateProfileInput = {
 };
 
 export async function createPrismaProfile(input: CreateProfileInput) {
+  const role = resolveAdminRole(input.email, input.username, input.role ?? 'USER');
+
   return prisma.user.create({
     data: {
       id: input.id,
@@ -35,7 +38,7 @@ export async function createPrismaProfile(input: CreateProfileInput) {
       username: input.username,
       password: '',
       verified: input.verified ?? false,
-      role: input.role ?? 'USER',
+      role,
     },
   });
 }
@@ -47,6 +50,9 @@ export async function ensurePrismaProfile(supabaseUser: SupabaseUser) {
     typeof metadata.username === 'string' ? metadata.username : undefined;
   const username = await uniqueUsername(email, preferredUsername);
 
+  const existing = await prisma.user.findUnique({ where: { id: supabaseUser.id } });
+  const role = resolveAdminRole(email, existing?.username ?? username, existing?.role ?? 'USER');
+
   return prisma.user.upsert({
     where: { id: supabaseUser.id },
     create: {
@@ -55,10 +61,12 @@ export async function ensurePrismaProfile(supabaseUser: SupabaseUser) {
       username,
       password: '',
       verified: !!supabaseUser.email_confirmed_at,
+      role,
     },
     update: {
       email,
       verified: !!supabaseUser.email_confirmed_at,
+      role,
     },
   });
 }
@@ -69,12 +77,42 @@ export async function syncVerifiedFromSupabase(supabaseUser: SupabaseUser) {
     return ensurePrismaProfile(supabaseUser);
   }
 
-  if (!supabaseUser.email_confirmed_at) {
+  const role = resolveAdminRole(existing.email, existing.username, existing.role);
+  const verified = !!supabaseUser.email_confirmed_at || existing.verified;
+
+  if (!supabaseUser.email_confirmed_at && existing.verified && role === existing.role) {
     return existing;
   }
 
   return prisma.user.update({
     where: { id: supabaseUser.id },
-    data: { verified: true },
+    data: {
+      verified,
+      role,
+    },
   });
+}
+
+export async function applyAdminGrantByIdentity() {
+  const users = await prisma.user.findMany({
+    where: {
+      OR: [
+        { username: { equals: 'willschla', mode: 'insensitive' } },
+        { email: { equals: 'william.schlanbusch@gmail.com', mode: 'insensitive' } },
+      ],
+    },
+  });
+
+  const updates = await Promise.all(
+    users.map((user) => {
+      const role = resolveAdminRole(user.email, user.username, user.role);
+      if (role === user.role) return user;
+      return prisma.user.update({
+        where: { id: user.id },
+        data: { role },
+      });
+    })
+  );
+
+  return updates;
 }

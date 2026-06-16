@@ -32,8 +32,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (error) {
     console.error('Failed to resend verification email:', error);
-    return res.status(500).json({ error: 'Failed to send email' });
+    return res.status(500).json({ error: 'Unable to send verification email. Please try again later.' });
   }
 
-  return res.status(200).json({ ok: true, message: 'Verification email sent' });
+  return res.status(200).json({ ok: true, message: 'A new verification email has been sent.' });
 }

@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { resolveAdminRole } from './admin-grant';
 import { prisma } from './prisma';
 import { ensurePrismaProfile } from './profile-sync';
 import { createSupabaseApiClient } from './supabase/api';
@@ -22,6 +23,14 @@ export async function getUserFromRequest(req: any, res?: any): Promise<AuthConte
     let user = await prisma.user.findUnique({ where: { id: supabaseUser.id } });
     if (!user) {
       user = await ensurePrismaProfile(supabaseUser);
+    } else {
+      const role = resolveAdminRole(user.email, user.username, user.role);
+      if (role !== user.role) {
+        user = await prisma.user.update({
+          where: { id: user.id },
+          data: { role },
+        });
+      }
     }
 
     const { data: { session } } = await supabase.auth.getSession();
