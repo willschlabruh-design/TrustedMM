@@ -230,7 +230,13 @@ export default function Settings() {
         return;
       }
       const data = await res.json().catch(() => ({}));
-      throw new Error(typeof data.error === 'string' ? data.error : 'Failed to load settings.');
+      const message =
+        typeof data.error === 'string'
+          ? typeof data.details === 'string' && data.details !== data.error
+            ? `${data.error} — ${data.details}`
+            : data.error
+          : `Failed to load settings (HTTP ${res.status}).`;
+      throw new Error(message);
     }
     const data: SettingsResponse = await res.json();
     setUser(data.user);
