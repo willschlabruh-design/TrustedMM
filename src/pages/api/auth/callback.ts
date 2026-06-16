@@ -21,14 +21,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       await syncVerifiedFromSupabase(user);
-      return redirect(`${appUrl}/dashboard?verified=1`);
+      return redirect(`${appUrl}/`);
     }
   }
 
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
     await syncVerifiedFromSupabase(user);
-    return redirect(`${appUrl}/dashboard?verified=1`);
+    return redirect(`${appUrl}/`);
   }
 
   return redirect(`${appUrl}/login?error=Verification+session+not+found`);

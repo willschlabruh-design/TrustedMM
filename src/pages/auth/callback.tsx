@@ -35,7 +35,7 @@ export default function AuthCallback() {
         });
 
         if (!mounted) return;
-        await router.replace('/dashboard');
+        await router.replace('/');
       } catch (err: any) {
         if (!mounted) return;
         setError(err?.message || 'Authentication callback failed');
