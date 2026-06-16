@@ -1,15 +1,9 @@
 import { createServerClient, parseCookieHeader, serializeCookieHeader } from '@supabase/ssr';
 import type { NextApiRequest, NextApiResponse } from 'next';
-
-function getSupabaseEnv() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-  if (!url || !key) return null;
-  return { url, key };
-}
+import { getSupabasePublicEnvOrNull } from './env';
 
 export function createSupabaseApiClient(req: NextApiRequest, res?: NextApiResponse) {
-  const env = getSupabaseEnv();
+  const env = getSupabasePublicEnvOrNull();
   if (!env) return null;
 
   const { url, key } = env;

@@ -1,19 +1,25 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import fs from "fs";
-import path from "path";
 
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const schema = fs.readFileSync(
-    path.join(process.cwd(), "prisma", "schema.prisma"),
-    "utf8"
-  );
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
   res.status(200).json({
-    databaseUrl: process.env.DATABASE_URL?.replace(/:\/\/.*@/, "://****@"),
-    containsPostgres: schema.includes('provider = "postgresql"'),
-    containsSqlite: schema.includes('provider = "sqlite"'),
+    supabaseUrl,
+    startsWithHttps: supabaseUrl?.startsWith("https://") ?? false,
+    hasPublishableKey:
+      !!process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    hasServiceRole:
+      !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+
+    publishableKeyLength:
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.length ?? 0,
+
+    serviceRoleLength:
+      process.env.SUPABASE_SERVICE_ROLE_KEY?.length ?? 0,
+
+    nodeEnv: process.env.NODE_ENV,
   });
 }
