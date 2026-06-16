@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../../lib/prisma';
-import { AuthAuditAction, logAuthAudit } from '../../../lib/audit-log';
-import { requireAuth } from '../_helpers/requireAuth';
+import { prisma } from '../../../../lib/prisma';
+import { AuthAuditAction, logAuthAudit } from '../../../../lib/audit-log';
+import { requireAuth } from '../../_helpers/requireAuth';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end();

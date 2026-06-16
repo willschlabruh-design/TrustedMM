@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../../../lib/prisma';
-import { getOrCreateUserSettings } from '../../../../lib/user-settings';
-import { getUserFromRequest } from '../../../../lib/session';
+import { prisma } from '../../../lib/prisma';
+import { getOrCreateUserSettings } from '../../../lib/user-settings';
+import { getUserFromRequest } from '../../../lib/session';
 
 async function canViewProfile(viewerId: string | null, targetId: string, visibility: string) {
   if (viewerId === targetId) return true;
