@@ -1,0 +1,13 @@
+[1mdiff --git a/.env b/.env[m
+[1mindex 04bcdba..74b9ea3 100644[m
+[1m--- a/.env[m
+[1m+++ b/.env[m
+[36m@@ -1,5 +1,7 @@[m
+ # SQLite Database (local development)[m
+[31m-DATABASE_URL="file:./prisma/dev.db"[m
+[32m+[m[32mDATABASE_URL="postgresql://postgres.dofpczgvqxkpssinhhtf:mniKssRxRSVw76hQ@aws-0-eu-west-1.pooler.supabase.com:6543/postgres"[m
+[32m+[m
+[32m+[m[32mDIRECT_URL="postgresql://postgres.dofpczgvqxkpssinhhtf:mniKssRxRSVw76hQ@aws-0-eu-west-1.pooler.supabase.com:6543/postgres"[m
+ NEXT_PUBLIC_APP_URL="https://trustedmm.com"[m
+ JWT_SECRET="dev-secret-change-me"[m
+ [m

@@ -1,17 +1,19 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from "next";
+import fs from "fs";
+import path from "path";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const dbUrl = process.env.DATABASE_URL || 'NOT SET';
-  
-  // Mask the password for security
-  let maskedUrl = dbUrl;
-  if (dbUrl && dbUrl.includes('@')) {
-    maskedUrl = dbUrl.replace(/:[^@]*@/, ':****@');
-  }
-  
-  return res.status(200).json({
-    databaseUrl: maskedUrl,
-    nodeEnv: process.env.NODE_ENV,
-    hasDatabase: !!process.env.DATABASE_URL
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const schema = fs.readFileSync(
+    path.join(process.cwd(), "prisma", "schema.prisma"),
+    "utf8"
+  );
+
+  res.status(200).json({
+    databaseUrl: process.env.DATABASE_URL?.replace(/:\/\/.*@/, "://****@"),
+    containsPostgres: schema.includes('provider = "postgresql"'),
+    containsSqlite: schema.includes('provider = "sqlite"'),
   });
 }
