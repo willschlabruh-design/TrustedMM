@@ -9,6 +9,15 @@ export const AuthAuditAction = {
   PASSWORD_RESET_REQUESTED: 'PASSWORD_RESET_REQUESTED',
   PASSWORD_RESET_COMPLETED: 'PASSWORD_RESET_COMPLETED',
   EMAIL_RESEND_REQUESTED: 'EMAIL_RESEND_REQUESTED',
+  PASSWORD_CHANGED: 'PASSWORD_CHANGED',
+  EMAIL_CHANGED: 'EMAIL_CHANGED',
+  USERNAME_CHANGED: 'USERNAME_CHANGED',
+  SETTINGS_UPDATED: 'SETTINGS_UPDATED',
+  DATA_EXPORT_REQUESTED: 'DATA_EXPORT_REQUESTED',
+  ACCOUNT_DELETION_REQUESTED: 'ACCOUNT_DELETION_REQUESTED',
+  SESSIONS_REVOKED: 'SESSIONS_REVOKED',
+  TWO_FA_ENABLED: 'TWO_FA_ENABLED',
+  TWO_FA_DISABLED: 'TWO_FA_DISABLED',
 } as const;
 
 export type AuthAuditActionType = (typeof AuthAuditAction)[keyof typeof AuthAuditAction];
@@ -21,6 +30,15 @@ export const AUTH_AUDIT_ACTION_LABELS: Record<AuthAuditActionType, string> = {
   [AuthAuditAction.PASSWORD_RESET_REQUESTED]: 'Password reset requested',
   [AuthAuditAction.PASSWORD_RESET_COMPLETED]: 'Password reset completed',
   [AuthAuditAction.EMAIL_RESEND_REQUESTED]: 'Email resend requested',
+  [AuthAuditAction.PASSWORD_CHANGED]: 'Password changed',
+  [AuthAuditAction.EMAIL_CHANGED]: 'Email change requested',
+  [AuthAuditAction.USERNAME_CHANGED]: 'Username changed',
+  [AuthAuditAction.SETTINGS_UPDATED]: 'Settings updated',
+  [AuthAuditAction.DATA_EXPORT_REQUESTED]: 'Data export requested',
+  [AuthAuditAction.ACCOUNT_DELETION_REQUESTED]: 'Account deletion requested',
+  [AuthAuditAction.SESSIONS_REVOKED]: 'Sessions revoked',
+  [AuthAuditAction.TWO_FA_ENABLED]: 'Two-factor authentication enabled',
+  [AuthAuditAction.TWO_FA_DISABLED]: 'Two-factor authentication disabled',
 };
 
 type AuthAuditInput = {

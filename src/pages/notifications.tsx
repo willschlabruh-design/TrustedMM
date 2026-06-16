@@ -113,7 +113,7 @@ export default function Notifications() {
         <EmptyState
           icon="🔔"
           title="You're all caught up"
-          description="No new notifications right now. When something needs your attention — a message, trade update, or middleman request — it will appear here."
+          description="No new notifications right now. When something needs your attention — a trade update, message, or assignment — it will appear here."
           actionLabel="View dashboard"
           actionHref="/dashboard"
         />
@@ -398,11 +398,13 @@ function MiddlemanNotification({
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <h3 className="font-semibold text-white">Middleman requested</h3>
-            <Badge variant="warning">Middleman</Badge>
+            <h3 className="font-semibold text-white">Trade awaiting assignment</h3>
+            <Badge variant="warning">Assignment</Badge>
           </div>
           <p className="text-sm text-slate-400">
-            {payload.tradeId ? `Trade ID: ${payload.tradeId}` : 'A trade needs a middleman.'}
+            {payload.tradeId
+              ? `Trade #${payload.tradeId} is ready for TrustedMM middleman assignment.`
+              : 'A trade request is awaiting middleman assignment.'}
           </p>
           <p className="text-xs text-slate-500 mt-3">Received: {when}</p>
           {trade && trade.middlemanId && (
@@ -457,7 +459,7 @@ function MiddlemanNotification({
                   });
                   const j = await r.json().catch(() => ({}));
                   if (r.ok) {
-                    alert('You are now the middleman for this trade');
+                    alert('You have been assigned as the middleman for this trade');
                     markRead(n.id);
                     window.location.href = `/trades/${payload.tradeId}`;
                     return;

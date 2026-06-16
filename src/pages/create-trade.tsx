@@ -64,8 +64,8 @@ export default function CreateTrade() {
 
   return (
     <PageShell
-      title="Create Trade"
-      description="Set up a new escrow trade between buyer and seller. A middleman can be assigned once the trade is created."
+      title="Request a Trade"
+      description="Submit a trade request. TrustedMM will review it and assign a verified middleman to protect both parties."
       maxWidth="lg"
     >
       {/* Step indicator */}
@@ -238,7 +238,9 @@ export default function CreateTrade() {
                 <CardTitle className="text-base">Trade preview</CardTitle>
                 <StatusBadge status="WAITING_FOR_MIDDLEMEN" />
               </div>
-              <CardDescription>Initial status after creation.</CardDescription>
+              <CardDescription>
+              After submission, TrustedMM assigns a verified middleman and notifies all parties.
+            </CardDescription>
             </CardHeader>
             <TradeProgress status="WAITING_FOR_MIDDLEMEN" />
             <div className="mt-6 pt-4 border-t border-white/8 space-y-2 text-sm">

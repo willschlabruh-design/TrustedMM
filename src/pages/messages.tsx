@@ -172,8 +172,8 @@ export default function Messages() {
             icon="💬"
             title="Select a conversation"
             description="Choose a trade chat from the sidebar to view messages, or start a new trade to begin a conversation."
-            actionLabel="Browse trades"
-            actionHref="/dashboard"
+            actionLabel="Request a Trade"
+            actionHref="/create-trade"
           />
         </Card>
 

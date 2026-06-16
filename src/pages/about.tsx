@@ -14,16 +14,16 @@ const pillars = [
   },
   {
     icon: '🤝',
-    title: 'Community',
-    description: 'A trusted network of middlemen and verified traders.',
+    title: 'Platform Operations',
+    description: 'TrustedMM assigns verified middlemen and manages every trade end-to-end.',
   },
 ];
 
 export default function About() {
   return (
     <PageShell
-      title="About MiddleMan"
-      description="MiddleMan provides secure escrow services for digital trades. Our verified staff and robust dispute resolution ensure both parties can trade with confidence."
+      title="About TrustedMM"
+      description="TrustedMM provides secure escrow services for digital trades. Verified staff assign middlemen, manage verification, and resolve disputes so both parties can trade with confidence."
       maxWidth="xl"
     >
       <section className="grid md:grid-cols-3 gap-5">

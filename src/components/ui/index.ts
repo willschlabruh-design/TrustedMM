@@ -8,3 +8,4 @@ export { Skeleton, SkeletonCard, SkeletonTable } from './Skeleton';
 export { default as Modal } from './Modal';
 export { Table, THead, TBody, TR, TH, TD } from './Table';
 export { Tabs, TabPanel } from './Tabs';
+export { default as Toggle, RadioOption } from './Toggle';

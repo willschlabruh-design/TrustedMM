@@ -5,23 +5,23 @@ import Badge from '../components/ui/Badge';
 const steps = [
   {
     step: 1,
-    title: 'Create Trade',
-    description: 'Buyer creates a trade request specifying terms.',
+    title: 'Request a Trade',
+    description: 'Submit trade details with buyer and seller information.',
   },
   {
     step: 2,
     title: 'Middleman Assigned',
-    description: 'A verified middleman accepts and secures the assets.',
+    description: 'TrustedMM reviews your request and assigns a verified middleman.',
   },
   {
     step: 3,
     title: 'Verification',
-    description: 'Assets are checked and confirmed by participants.',
+    description: 'Identity and assets are verified before funds move.',
   },
   {
     step: 4,
-    title: 'Release',
-    description: 'Upon confirmation, the middleman releases assets to the recipient.',
+    title: 'Completion',
+    description: 'Upon confirmation, the assigned middleman completes the trade securely.',
   },
 ];
 
@@ -29,7 +29,7 @@ export default function HowItWorks() {
   return (
     <PageShell
       title="How It Works"
-      description="A secure trade involves four clear steps: create the trade, assign a verified middleman, verify assets, and release funds or items."
+      description="TrustedMM manages every trade: submit a request, receive a verified middleman assignment, verify assets, and complete securely."
       maxWidth="xl"
     >
       <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-5">

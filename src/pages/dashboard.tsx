@@ -33,16 +33,16 @@ type DashboardStats = {
 const QUICK_ACTIONS = [
   {
     href: '/create-trade',
-    title: 'Start Trade',
-    description: 'Open a new escrow trade with a counterparty.',
+    title: 'Request a Trade',
+    description: 'Submit a trade request for TrustedMM review and middleman assignment.',
     icon: '⚡',
     accent: 'from-amber-500/20 to-orange-500/10',
   },
   {
-    href: '/find-middleman',
-    title: 'Find Middleman',
-    description: 'Browse verified middlemen for your next deal.',
-    icon: '🛡️',
+    href: '/how-it-works',
+    title: 'How It Works',
+    description: 'Learn how TrustedMM assigns middlemen and protects trades.',
+    icon: '📋',
     accent: 'from-emerald-500/20 to-teal-500/10',
   },
   {

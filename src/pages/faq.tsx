@@ -3,20 +3,21 @@ import Card from '../components/ui/Card';
 
 const faqs = [
   {
-    question: 'How does a middleman work?',
-    answer: 'A middleman holds assets in escrow until both parties confirm the trade.',
+    question: 'How does TrustedMM assign a middleman?',
+    answer:
+      'You submit a trade request. TrustedMM reviews it and assigns a verified platform middleman — you do not browse or choose middlemen yourself.',
   },
   {
-    question: 'How long does it take?',
-    answer: 'Most trades complete within hours depending on verification speed.',
+    question: 'How long does a trade take?',
+    answer: 'Most trades complete within hours depending on verification and participant response times.',
   },
   {
     question: 'How much does it cost?',
-    answer: 'Fees depend on trade value; fees are shown before confirmation.',
+    answer: 'Fees depend on trade value and are disclosed before you confirm.',
   },
   {
     question: 'What happens if something goes wrong?',
-    answer: 'Open a dispute and our team will review evidence and resolve fairly.',
+    answer: 'Open a dispute and our team reviews evidence to resolve the issue fairly.',
   },
 ];
 
