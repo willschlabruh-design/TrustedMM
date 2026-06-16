@@ -45,10 +45,8 @@ export default function Hero(){
           </div>
         </div>
 
-        <div className="flex-1">
-          <div className="dashboard-card shadow-lg">
-            <DashboardPreview />
-          </div>
+        <div className="flex-1 flex justify-center md:justify-end">
+          <DashboardPreview />
         </div>
       </div>
     </section>

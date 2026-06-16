@@ -180,3 +180,15 @@ model VerificationToken {
 
   @@index([token])
 }
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  email     String?
+  ipAddress String?
+  action    String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([action])
+}

@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '../../../lib/prisma';
 import { getAuthCallbackUrl } from '../../../lib/auth-utils';
+import { AuthAuditAction, logAuthAudit } from '../../../lib/audit-log';
 import { createPrismaProfile } from '../../../lib/profile-sync';
 import { createSupabaseApiClient } from '../../../lib/supabase/api';
 
@@ -77,6 +78,13 @@ export default async function handler(
       email,
       username,
       verified: !!data.user.email_confirmed_at,
+    });
+
+    logAuthAudit({
+      req,
+      userId: user.id,
+      email: user.email,
+      action: AuthAuditAction.USER_REGISTRATION,
     });
 
     return res.status(201).json({

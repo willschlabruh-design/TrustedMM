@@ -93,15 +93,20 @@ export default function ResetPassword() {
     setSubmitting(true);
 
     try {
-      const supabase = createBrowserClient();
-      const { error: updateError } = await supabase.auth.updateUser({ password });
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ password }),
+      });
 
-      if (updateError) {
-        setError(mapAuthError(updateError.message, 'reset'));
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setError(data.error || mapAuthError(undefined, 'reset'));
         return;
       }
 
-      await supabase.auth.signOut();
       setSuccess(true);
 
       setTimeout(() => {

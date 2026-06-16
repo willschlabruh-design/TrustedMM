@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '../../../lib/prisma';
+import { AuthAuditAction, logAuthAudit } from '../../../lib/audit-log';
 import { createSupabaseApiClient } from '../../../lib/supabase/api';
 import { ensurePrismaProfile } from '../../../lib/profile-sync';
 
@@ -35,6 +36,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       (prismaUser && !prismaUser.verified) || isEmailNotConfirmedError(error?.message);
 
     if (unverifiedAccount && prismaUser) {
+      logAuthAudit({
+        req,
+        userId: prismaUser.id,
+        email: prismaUser.email,
+        action: AuthAuditAction.LOGIN_FAILURE,
+      });
       return res.status(403).json({
         error: UNVERIFIED_MESSAGE,
         requiresVerification: true,
@@ -43,6 +50,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
+    logAuthAudit({
+      req,
+      email: normalizedEmail,
+      userId: prismaUser?.id ?? null,
+      action: AuthAuditAction.LOGIN_FAILURE,
+    });
     return res.status(401).json({ error: 'Invalid credentials' });
   }
 
@@ -54,6 +67,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const isVerified = profile.verified || !!data.user.email_confirmed_at;
   if (!isVerified) {
     await supabase.auth.signOut();
+    logAuthAudit({
+      req,
+      userId: profile.id,
+      email: profile.email,
+      action: AuthAuditAction.LOGIN_FAILURE,
+    });
     return res.status(403).json({
       error: UNVERIFIED_MESSAGE,
       requiresVerification: true,
@@ -64,6 +83,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (profile.role === 'ADMIN') {
     await supabase.auth.signOut();
+    logAuthAudit({
+      req,
+      userId: profile.id,
+      email: profile.email,
+      action: AuthAuditAction.LOGIN_FAILURE,
+    });
     return res.status(403).json({
       error: 'Admin accounts require email verification',
       requiresEmailVerification: true,
@@ -78,6 +103,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       data: { verified: true },
     });
   }
+
+  logAuthAudit({
+    req,
+    userId: profile.id,
+    email: profile.email,
+    action: AuthAuditAction.LOGIN_SUCCESS,
+  });
 
   return res.status(200).json({ token: data.session.access_token });
 }

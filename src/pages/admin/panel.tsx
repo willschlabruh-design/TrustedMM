@@ -49,6 +49,14 @@ export default function AdminPanel(){
         <div className="max-w-6xl mx-auto">
           <h1 className="text-2xl font-semibold mb-2">Platform Admin Panel</h1>
           <p className="mb-4 text-slate-300">Signed in as {me.username}</p>
+          <div className="mb-6">
+            <a
+              href="/admin/audit-logs"
+              className="inline-flex px-4 py-2 rounded bg-primary text-white text-sm hover:opacity-90"
+            >
+              View Authentication Audit Logs
+            </a>
+          </div>
           <h2 className="text-xl font-semibold mb-2">Users</h2>
           <div className="overflow-x-auto bg-neutral-800 p-4 rounded">
             <table className="w-full table-auto border-collapse">

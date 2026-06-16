@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { AuthAuditAction, logAuthAudit } from '../../../lib/audit-log';
 import { mapAuthError } from '../../../lib/password-reset';
 import { createSupabaseApiClient } from '../../../lib/supabase/api';
 
@@ -32,6 +33,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   await supabase.auth.signOut();
+
+  logAuthAudit({
+    req,
+    userId: user.id,
+    email: user.email ?? null,
+    action: AuthAuditAction.PASSWORD_RESET_COMPLETED,
+  });
 
   return res.status(200).json({ ok: true, message: 'Password updated successfully.' });
 }

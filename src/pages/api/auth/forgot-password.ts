@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getAppUrl, getResetPasswordUrl } from '../../../lib/auth-utils';
+import { AuthAuditAction, logAuthAudit } from '../../../lib/audit-log';
 import { isValidEmail, mapAuthError } from '../../../lib/password-reset';
 import { sendPasswordResetEmail } from '../../../lib/mailer';
 import { createSupabaseAdminClient } from '../../../lib/supabase/admin';
@@ -191,6 +192,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     hasResendKey: !!process.env.RESEND_API_KEY?.trim(),
     hasServiceRoleKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY?.trim(),
     fromEmail: process.env.FROM_EMAIL ?? '(default no-reply@trustedmm.com)',
+  });
+
+  logAuthAudit({
+    req,
+    email: trimmedEmail,
+    action: AuthAuditAction.PASSWORD_RESET_REQUESTED,
   });
 
   try {

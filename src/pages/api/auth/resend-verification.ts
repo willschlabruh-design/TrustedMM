@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '../../../lib/prisma';
 import { getAuthCallbackUrl } from '../../../lib/auth-utils';
+import { AuthAuditAction, logAuthAudit } from '../../../lib/audit-log';
 import { createSupabaseApiClient } from '../../../lib/supabase/api';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -34,6 +35,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.error('Failed to resend verification email:', error);
     return res.status(500).json({ error: 'Unable to send verification email. Please try again later.' });
   }
+
+  logAuthAudit({
+    req,
+    userId: user.id,
+    email: user.email,
+    action: AuthAuditAction.EMAIL_RESEND_REQUESTED,
+  });
 
   return res.status(200).json({ ok: true, message: 'A new verification email has been sent.' });
 }

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getAppUrl } from '../../../lib/auth-utils';
+import { AuthAuditAction, logAuthAudit } from '../../../lib/audit-log';
 import { syncVerifiedFromSupabase } from '../../../lib/profile-sync';
 import { createSupabaseApiClient } from '../../../lib/supabase/api';
 
@@ -21,6 +22,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       await syncVerifiedFromSupabase(user);
+      logAuthAudit({
+        req,
+        userId: user.id,
+        email: user.email ?? null,
+        action: AuthAuditAction.EMAIL_VERIFICATION,
+      });
       return redirect(`${appUrl}/`);
     }
   }
@@ -28,6 +35,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
     await syncVerifiedFromSupabase(user);
+    logAuthAudit({
+      req,
+      userId: user.id,
+      email: user.email ?? null,
+      action: AuthAuditAction.EMAIL_VERIFICATION,
+    });
     return redirect(`${appUrl}/`);
   }
 
