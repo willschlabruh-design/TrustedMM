@@ -1,72 +1,151 @@
-import Header from '../components/Header';
 import { useEffect, useState } from 'react';
+import PageShell from '../components/layout/PageShell';
+import Card, { CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
+import Badge from '../components/ui/Badge';
+import Button from '../components/ui/Button';
+import EmptyState from '../components/ui/EmptyState';
+import { SkeletonCard } from '../components/ui/Skeleton';
 
-function useCurrentUser(){
-  const [user, setUser] = useState<any>(null);
-  useEffect(()=>{
+function useCurrentUser() {
+  const [user, setUser] = useState<{ role?: string } | null>(null);
+  useEffect(() => {
     let mounted = true;
-    fetch('/api/auth/me').then(r=>r.json()).then(j=>{ if(!mounted) return; setUser(j.user ?? null); }).catch(()=>{});
-    return ()=>{ mounted = false };
-  },[]);
+    fetch('/api/auth/me')
+      .then((r) => r.json())
+      .then((j) => {
+        if (!mounted) return;
+        setUser(j.user ?? null);
+      })
+      .catch(() => {});
+    return () => {
+      mounted = false;
+    };
+  }, []);
   return user;
 }
 
-export default function Reviews(){
-  const [reviews, setReviews] = useState<any[]>([]);
+type Review = {
+  id: string;
+  rating: number;
+  text: string;
+  author?: { username?: string; name?: string };
+  trade?: { title?: string };
+};
+
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <div className="flex items-center gap-1" aria-label={`${rating} out of 5 stars`}>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <span key={i} className={i < rating ? 'text-amber-400' : 'text-slate-600'}>
+          ★
+        </span>
+      ))}
+      <Badge variant="default" className="ml-2">
+        {rating}/5
+      </Badge>
+    </div>
+  );
+}
+
+export default function Reviews() {
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const user = useCurrentUser();
 
-  useEffect(()=>{
+  useEffect(() => {
     let mounted = true;
-    (async ()=>{
-      try{
+    (async () => {
+      try {
         const r = await fetch('/api/reviews');
-        if(!mounted) return;
-        if(!r.ok){ setLoading(false); return; }
+        if (!mounted) return;
+        if (!r.ok) {
+          setLoading(false);
+          return;
+        }
         const j = await r.json();
         setReviews(j.reviews || []);
-      }catch(e){}
+      } catch {
+        /* ignore */
+      }
       setLoading(false);
     })();
-    return ()=>{ mounted = false };
-  },[]);
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen bg-deep text-white">
-      <Header />
-      <main className="pt-36 container mx-auto px-6">
-        <h1 className="text-3xl font-bold">Reviews</h1>
-        <p className="mt-3 text-slate-200">Verified reviews from completed trades.</p>
+    <PageShell
+      title="Reviews"
+      description="Verified reviews from completed trades."
+      maxWidth="xl"
+    >
+      {loading && (
+        <div className="grid md:grid-cols-2 gap-4">
+          <SkeletonCard />
+          <SkeletonCard />
+        </div>
+      )}
 
-        <div className="mt-6 grid md:grid-cols-2 gap-4">
-          {loading && <div>Loading reviews…</div>}
-          {!loading && reviews.length === 0 && <div className="text-slate-400">No reviews yet.</div>}
-          {reviews.map(r=> (
-            <div key={r.id} className="card-glass">
-              <div className="flex items-start gap-3">
-                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">{(r.author?.username||'U')[0]?.toUpperCase()}</div>
-                <div>
-                  <div className="font-semibold">{r.author?.username || r.author?.name || 'User'} — {'★'.repeat(r.rating) + '☆'.repeat(5-r.rating)}</div>
-                  <div className="text-slate-300 mt-1">{r.text}</div>
-                  <div className="text-sm text-slate-500 mt-2">For trade: {r.trade?.title ?? '—'}</div>
-                  {user && user.role === 'ADMIN' && (
-                    <div className="mt-2">
-                      <button onClick={async ()=>{
-                        if(!confirm('Delete this review? This cannot be undone.')) return;
-                        try{
-                          const resp = await fetch(`/api/reviews/${r.id}`, { method: 'DELETE' });
-                          if(resp.ok){ setReviews(prev=>prev.filter(x=>x.id !== r.id)); }
-                          else { const j = await resp.json(); alert('Failed: ' + (j.error || resp.statusText)); }
-                        }catch(e){ alert('Failed to delete'); }
-                      }} className="px-3 py-1 mt-1 bg-red-600 text-white rounded">Delete review</button>
-                    </div>
-                  )}
+      {!loading && reviews.length === 0 && (
+        <EmptyState
+          icon="⭐"
+          title="No reviews yet"
+          description="Reviews appear here after trades are completed. Complete a trade to leave or receive feedback."
+          actionLabel="Go to dashboard"
+          actionHref="/dashboard"
+        />
+      )}
+
+      {!loading && reviews.length > 0 && (
+        <div className="grid md:grid-cols-2 gap-4">
+          {reviews.map((r) => (
+            <Card key={r.id} hover padding="md">
+              <CardHeader className="flex flex-row items-start gap-4 mb-0">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-purple-500/20 border border-white/10 text-lg font-bold">
+                  {(r.author?.username || r.author?.name || 'U')[0]?.toUpperCase()}
                 </div>
-              </div>
-            </div>
+                <div className="min-w-0 flex-1">
+                  <CardTitle className="text-base">
+                    {r.author?.username || r.author?.name || 'User'}
+                  </CardTitle>
+                  <div className="mt-1">
+                    <StarRating rating={r.rating} />
+                  </div>
+                </div>
+              </CardHeader>
+              <p className="mt-4 text-slate-300 text-sm leading-relaxed">{r.text}</p>
+              <CardDescription className="mt-3">
+                For trade: {r.trade?.title ?? '—'}
+              </CardDescription>
+              {user && user.role === 'ADMIN' && (
+                <div className="mt-4 pt-4 border-t border-white/8">
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={async () => {
+                      if (!confirm('Delete this review? This cannot be undone.')) return;
+                      try {
+                        const resp = await fetch(`/api/reviews/${r.id}`, { method: 'DELETE' });
+                        if (resp.ok) {
+                          setReviews((prev) => prev.filter((x) => x.id !== r.id));
+                        } else {
+                          const j = await resp.json();
+                          alert('Failed: ' + (j.error || resp.statusText));
+                        }
+                      } catch {
+                        alert('Failed to delete');
+                      }
+                    }}
+                  >
+                    Delete review
+                  </Button>
+                </div>
+              )}
+            </Card>
           ))}
         </div>
-      </main>
-    </div>
+      )}
+    </PageShell>
   );
 }

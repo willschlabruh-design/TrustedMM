@@ -1,27 +1,42 @@
-import Header from '../components/Header';
+import PageShell from '../components/layout/PageShell';
+import Card, { CardDescription, CardTitle } from '../components/ui/Card';
 
-export default function About(){
+const pillars = [
+  {
+    icon: '🎯',
+    title: 'Our Mission',
+    description: 'To make peer-to-peer trades safe and transparent.',
+  },
+  {
+    icon: '🔒',
+    title: 'Security',
+    description: 'Encryption, verification, and a trained dispute team protect users.',
+  },
+  {
+    icon: '🤝',
+    title: 'Community',
+    description: 'A trusted network of middlemen and verified traders.',
+  },
+];
+
+export default function About() {
   return (
-    <div className="min-h-screen bg-deep text-white">
-      <Header />
-      <main className="pt-36 container mx-auto px-6">
-        <h1 className="text-3xl font-bold">About MiddleMan</h1>
-        <p className="mt-4 max-w-2xl text-slate-200">MiddleMan provides secure escrow services for digital trades. Our verified staff and robust dispute resolution ensure both parties can trade with confidence.</p>
-        <section className="mt-8 grid md:grid-cols-3 gap-6">
-          <div className="card-glass">
-            <h3 className="font-semibold">Our Mission</h3>
-            <p className="text-slate-300 mt-2">To make peer-to-peer trades safe and transparent.</p>
-          </div>
-          <div className="card-glass">
-            <h3 className="font-semibold">Security</h3>
-            <p className="text-slate-300 mt-2">Encryption, verification, and a trained dispute team protect users.</p>
-          </div>
-          <div className="card-glass">
-            <h3 className="font-semibold">Community</h3>
-            <p className="text-slate-300 mt-2">A trusted network of middlemen and verified traders.</p>
-          </div>
-        </section>
-      </main>
-    </div>
+    <PageShell
+      title="About MiddleMan"
+      description="MiddleMan provides secure escrow services for digital trades. Our verified staff and robust dispute resolution ensure both parties can trade with confidence."
+      maxWidth="xl"
+    >
+      <section className="grid md:grid-cols-3 gap-5">
+        {pillars.map((item) => (
+          <Card key={item.title} hover padding="lg" className="text-center sm:text-left">
+            <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-purple-500/20 border border-white/10 text-2xl">
+              {item.icon}
+            </div>
+            <CardTitle>{item.title}</CardTitle>
+            <CardDescription className="mt-2 leading-relaxed">{item.description}</CardDescription>
+          </Card>
+        ))}
+      </section>
+    </PageShell>
   );
 }

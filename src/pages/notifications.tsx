@@ -1,225 +1,483 @@
-import Header from '../components/Header';
 import { useEffect, useState } from 'react';
+import PageShell from '../components/layout/PageShell';
+import Card from '../components/ui/Card';
+import Badge from '../components/ui/Badge';
+import Button from '../components/ui/Button';
+import Alert from '../components/ui/Alert';
+import EmptyState from '../components/ui/EmptyState';
 
-export default function Notifications(){
-  const [notifications, setNotifications] = useState<any[]>([]);
+type Notification = {
+  id: string;
+  type: string;
+  payload?: string;
+  read?: boolean;
+  createdAt: string;
+};
+
+function parsePayload(raw?: string): Record<string, string> {
+  try {
+    return JSON.parse(raw || '{}');
+  } catch {
+    return {};
+  }
+}
+
+function typeBadgeVariant(type: string): 'info' | 'success' | 'warning' | 'danger' | 'default' | 'purple' {
+  if (type === 'trade_completed') return 'success';
+  if (type === 'middleman_needed') return 'warning';
+  if (type === 'contact_message') return 'purple';
+  if (type === 'message') return 'info';
+  if (type === 'trade_created') return 'default';
+  return 'default';
+}
+
+function typeLabel(type: string): string {
+  const labels: Record<string, string> = {
+    contact_message: 'Contact',
+    message: 'Message',
+    trade_created: 'Trade',
+    middleman_needed: 'Middleman',
+    trade_completed: 'Completed',
+  };
+  return labels[type] || type.replace(/_/g, ' ');
+}
+
+export default function Notifications() {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<any>(null);
 
-  async function fetchNotifs(){
-    try{ const r = await fetch('/api/notifications', { credentials: 'same-origin' }); if(!r.ok) return; const j = await r.json(); setNotifications(j.notifications || []); }catch(e){}
+  async function fetchNotifs() {
+    try {
+      const r = await fetch('/api/notifications', { credentials: 'same-origin' });
+      if (!r.ok) return;
+      const j = await r.json();
+      setNotifications(j.notifications || []);
+    } catch {
+      /* ignore */
+    }
   }
 
-  useEffect(()=>{ fetchNotifs(); }, []);
+  useEffect(() => {
+    fetchNotifs();
+  }, []);
 
-  useEffect(()=>{
-    let mounted = true;
-    fetch('/api/auth/me').then(r=>r.json()).then(j=>{ if(!mounted) return; setUser(j.user ?? null); }).catch(()=>{});
-    return ()=>{ mounted = false };
-  },[]);
-
-  async function markRead(id:string){
-    // optimistic UI: remove notification immediately
+  async function markRead(id: string) {
     const prev = notifications;
-    setNotifications(prev.filter(n=>n.id !== id));
-    try{
-      const r = await fetch('/api/notifications', { method: 'POST', credentials: 'same-origin', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id }) });
-      if(!r.ok){
+    setNotifications(prev.filter((n) => n.id !== id));
+    try {
+      const r = await fetch('/api/notifications', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      if (!r.ok) {
         setNotifications(prev);
-        const j = await r.json().catch(()=>({}));
-        alert('Error: '+(j.error||r.statusText||'Unable to dismiss notification'));
+        const j = await r.json().catch(() => ({}));
+        alert('Error: ' + (j.error || r.statusText || 'Unable to dismiss notification'));
       }
-    }catch(e){
+    } catch {
       setNotifications(prev);
       alert('Network error marking read');
     }
   }
 
-  async function handleCreateChat(id:string){
+  async function handleCreateChat(id: string) {
     setLoading(true);
-    try{
-      const r = await fetch('/api/notifications/create-chat', { method: 'POST', credentials: 'same-origin', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id }) });
-      const j = await r.json().catch(()=>({}));
-      if(r.ok && j.roomId){ window.location.href = `/rooms/${j.roomId}`; return; }
-      alert('Error: '+(j.error||r.statusText||'Unknown error'));
-    }catch(e){ alert('Network error'); }
+    try {
+      const r = await fetch('/api/notifications/create-chat', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      const j = await r.json().catch(() => ({}));
+      if (r.ok && j.roomId) {
+        window.location.href = `/rooms/${j.roomId}`;
+        return;
+      }
+      alert('Error: ' + (j.error || r.statusText || 'Unknown error'));
+    } catch {
+      alert('Network error');
+    }
     setLoading(false);
   }
 
   return (
-    <>
-      <Header />
-      <main className="container mx-auto px-6 py-24">
-        <h1 className="text-3xl font-bold">Notifications</h1>
-        <p className="mt-4 text-slate-400">Your recent notifications.</p>
-        <div className="mt-6 space-y-4">
-          {notifications.length === 0 && (
-            <div className="p-4 bg-white/5 rounded">No new notifications</div>
-          )}
-          {notifications.map(n=>{
-            const payload = (()=>{ try{ return JSON.parse(n.payload||'{}'); }catch(e){ return {}; } })();
-            const when = new Date(n.createdAt).toLocaleString();
-            // human-friendly render per type
-            if(n.type === 'contact_message'){
-              return (
-                <div key={n.id} className={`p-4 rounded ${n.read? 'bg-white/3' : 'bg-white/6'}`}>
-                  <div className="flex justify-between items-start gap-4">
-                    <div>
-                      <div className="font-semibold">New contact request</div>
-                      <div className="text-sm text-slate-400 mt-1">From: {payload.email || 'Unknown'}</div>
-                      <div className="text-sm text-slate-400 mt-2">{(payload.message||'').slice(0,300)}</div>
-                      <div className="text-xs text-slate-500 mt-2">Received: {when}</div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button disabled={loading} onClick={()=>{ markRead(n.id); }} className="px-3 py-1 bg-red-600 text-white rounded">Ignore</button>
-                      <button disabled={loading} onClick={()=>{ handleCreateChat(n.id); }} className="px-3 py-1 bg-green-600 text-white rounded">Create Chat</button>
-                    </div>
-                  </div>
-                </div>
-              );
-            }
+    <PageShell
+      title="Notifications"
+      description="Stay on top of trades, messages, and requests."
+      maxWidth="lg"
+    >
+      {notifications.length === 0 && (
+        <EmptyState
+          icon="🔔"
+          title="You're all caught up"
+          description="No new notifications right now. When something needs your attention — a message, trade update, or middleman request — it will appear here."
+          actionLabel="View dashboard"
+          actionHref="/dashboard"
+        />
+      )}
 
-            if(n.type === 'message'){
-              // payload may include roomId
-              return (
-                <div key={n.id} className={`p-4 rounded ${n.read? 'bg-white/3' : 'bg-white/6'}`}>
-                  <div className="flex justify-between items-start gap-4">
-                    <div>
-                      <div className="font-semibold">New message</div>
-                      <div className="text-sm text-slate-400 mt-1">{payload.roomId ? `Conversation: ${payload.roomId}` : 'You have a new message.'}</div>
-                      <div className="text-xs text-slate-500 mt-2">Received: {when}</div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button disabled={loading} onClick={()=>{ markRead(n.id); }} className="px-3 py-1 bg-red-600 text-white rounded">Dismiss</button>
-                      {payload.roomId && <button disabled={loading} onClick={()=>{ window.location.href = `/rooms/${payload.roomId}`; }} className="px-3 py-1 bg-green-600 text-white rounded">Open</button>}
-                    </div>
-                  </div>
-                </div>
-              );
-            }
+      <div className="space-y-4">
+        {notifications.map((n) => {
+          const payload = parsePayload(n.payload);
+          const when = new Date(n.createdAt).toLocaleString();
 
-            if(n.type === 'trade_created'){
-              const tradeId = payload.tradeId || payload.tradeid || payload.tradeID;
-              const roomId = payload.roomId || payload.roomid;
-              return (
-                <div key={n.id} className={`p-4 rounded ${n.read? 'bg-white/3' : 'bg-white/6'}`}>
-                  <div className="flex justify-between items-start gap-4">
-                    <div>
-                      <div className="font-semibold">New trade created</div>
-                      <div className="text-sm text-slate-400 mt-1">{tradeId ? `Trade ID: ${tradeId}` : 'A new trade was created.'}</div>
-                      <div className="text-xs text-slate-500 mt-2">Received: {when}</div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button disabled={loading} onClick={()=>{ markRead(n.id); }} className="px-3 py-1 bg-red-600 text-white rounded">Ignore</button>
-                      {roomId && <button disabled={loading} onClick={()=>{ window.location.href = `/rooms/${roomId}`; }} className="px-3 py-1 bg-green-600 text-white rounded">Open Chat</button>}
-                      {tradeId && <button disabled={loading} onClick={()=>{ window.location.href = `/trades/${tradeId}`; }} className="px-3 py-1 bg-white/5 text-white rounded">View Trade</button>}
-                    </div>
-                  </div>
-                </div>
-              );
-            }
-
-            if(n.type === 'middleman_needed'){
-              return <MiddlemanNotification key={n.id} n={n} payload={payload} when={when} markRead={markRead} />;
-            }
-
-            if(n.type === 'trade_completed'){
-              const tradeId = payload.tradeId || payload.tradeid || payload.tradeID;
-              return (
-                <div key={n.id} className={`p-4 rounded ${n.read? 'bg-white/3' : 'bg-white/6'}`}>
-                  <div className="flex justify-between items-start gap-4">
-                    <div>
-                      <div className="font-semibold">Trade completed</div>
-                      <div className="text-sm text-slate-400 mt-1">{tradeId ? `Trade ID: ${tradeId}` : 'A trade was completed.'}</div>
-                      <div className="text-xs text-slate-500 mt-2">Received: {when}</div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button disabled={loading} onClick={()=>{ markRead(n.id); }} className="px-3 py-1 bg-red-600 text-white rounded">Dismiss</button>
-                      {tradeId && <button disabled={loading} onClick={()=>{ window.location.href = `/trades/${tradeId}/review`; }} className="px-3 py-1 bg-green-600 text-white rounded">Review</button>}
-                    </div>
-                  </div>
-                </div>
-              );
-            }
-
-            // fallback: show a small friendly summary with type and brief payload preview
+          if (n.type === 'contact_message') {
             return (
-              <div key={n.id} className={`p-4 rounded ${n.read? 'bg-white/3' : 'bg-white/6'}`}>
-                <div className="flex justify-between items-start gap-4">
-                  <div>
-                    <div className="font-semibold">{n.type.replace(/_/g,' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}</div>
-                    <div className="text-sm text-slate-400 mt-1">{typeof n.payload === 'string' ? n.payload.slice(0,200) : JSON.stringify(payload).slice(0,200)}</div>
-                    <div className="text-xs text-slate-500 mt-2">Received: {when}</div>
+              <NotificationCard key={n.id} unread={!n.read} type={n.type}>
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="font-semibold text-white">New contact request</h3>
+                      <Badge variant={typeBadgeVariant(n.type)}>{typeLabel(n.type)}</Badge>
+                    </div>
+                    <p className="text-sm text-slate-400">From: {payload.email || 'Unknown'}</p>
+                    <p className="text-sm text-slate-300 mt-2 leading-relaxed">
+                      {(payload.message || '').slice(0, 300)}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-3">Received: {when}</p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button disabled={loading} onClick={()=>{ markRead(n.id); }} className="px-3 py-1 bg-red-600 text-white rounded">Dismiss</button>
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
+                    <Button variant="ghost" size="sm" disabled={loading} onClick={() => markRead(n.id)}>
+                      Ignore
+                    </Button>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      loading={loading}
+                      disabled={loading}
+                      onClick={() => handleCreateChat(n.id)}
+                    >
+                      Create Chat
+                    </Button>
                   </div>
+                </div>
+              </NotificationCard>
+            );
+          }
+
+          if (n.type === 'message') {
+            return (
+              <NotificationCard key={n.id} unread={!n.read} type={n.type}>
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="font-semibold text-white">New message</h3>
+                      <Badge variant={typeBadgeVariant(n.type)}>{typeLabel(n.type)}</Badge>
+                    </div>
+                    <p className="text-sm text-slate-400">
+                      {payload.roomId
+                        ? `Conversation: ${payload.roomId}`
+                        : 'You have a new message.'}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-3">Received: {when}</p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
+                    <Button variant="ghost" size="sm" disabled={loading} onClick={() => markRead(n.id)}>
+                      Dismiss
+                    </Button>
+                    {payload.roomId && (
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        disabled={loading}
+                        onClick={() => {
+                          window.location.href = `/rooms/${payload.roomId}`;
+                        }}
+                      >
+                        Open
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </NotificationCard>
+            );
+          }
+
+          if (n.type === 'trade_created') {
+            const tradeId = payload.tradeId || payload.tradeid || payload.tradeID;
+            const roomId = payload.roomId || payload.roomid;
+            return (
+              <NotificationCard key={n.id} unread={!n.read} type={n.type}>
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="font-semibold text-white">New trade created</h3>
+                      <Badge variant={typeBadgeVariant(n.type)}>{typeLabel(n.type)}</Badge>
+                    </div>
+                    <p className="text-sm text-slate-400">
+                      {tradeId ? `Trade ID: ${tradeId}` : 'A new trade was created.'}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-3">Received: {when}</p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
+                    <Button variant="ghost" size="sm" disabled={loading} onClick={() => markRead(n.id)}>
+                      Ignore
+                    </Button>
+                    {roomId && (
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        disabled={loading}
+                        onClick={() => {
+                          window.location.href = `/rooms/${roomId}`;
+                        }}
+                      >
+                        Open Chat
+                      </Button>
+                    )}
+                    {tradeId && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={loading}
+                        onClick={() => {
+                          window.location.href = `/trades/${tradeId}`;
+                        }}
+                      >
+                        View Trade
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </NotificationCard>
+            );
+          }
+
+          if (n.type === 'middleman_needed') {
+            return (
+              <MiddlemanNotification
+                key={n.id}
+                n={n}
+                payload={payload}
+                when={when}
+                markRead={markRead}
+              />
+            );
+          }
+
+          if (n.type === 'trade_completed') {
+            const tradeId = payload.tradeId || payload.tradeid || payload.tradeID;
+            return (
+              <NotificationCard key={n.id} unread={!n.read} type={n.type}>
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="font-semibold text-white">Trade completed</h3>
+                      <Badge variant={typeBadgeVariant(n.type)}>{typeLabel(n.type)}</Badge>
+                    </div>
+                    <p className="text-sm text-slate-400">
+                      {tradeId ? `Trade ID: ${tradeId}` : 'A trade was completed.'}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-3">Received: {when}</p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
+                    <Button variant="ghost" size="sm" disabled={loading} onClick={() => markRead(n.id)}>
+                      Dismiss
+                    </Button>
+                    {tradeId && (
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        disabled={loading}
+                        onClick={() => {
+                          window.location.href = `/trades/${tradeId}/review`;
+                        }}
+                      >
+                        Review
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </NotificationCard>
+            );
+          }
+
+          return (
+            <NotificationCard key={n.id} unread={!n.read} type={n.type}>
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="font-semibold text-white">
+                      {n.type.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
+                    </h3>
+                    <Badge variant="default">{typeLabel(n.type)}</Badge>
+                  </div>
+                  <p className="text-sm text-slate-400">
+                    {typeof n.payload === 'string'
+                      ? n.payload.slice(0, 200)
+                      : JSON.stringify(payload).slice(0, 200)}
+                  </p>
+                  <p className="text-xs text-slate-500 mt-3">Received: {when}</p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
+                  <Button variant="ghost" size="sm" disabled={loading} onClick={() => markRead(n.id)}>
+                    Dismiss
+                  </Button>
                 </div>
               </div>
-            );
-          })}
-        </div>
-      </main>
-    </>
+            </NotificationCard>
+          );
+        })}
+      </div>
+    </PageShell>
   );
 }
 
-function MiddlemanNotification({ n, payload, when, markRead } : any){
+function NotificationCard({
+  children,
+  unread,
+  type,
+}: {
+  children: React.ReactNode;
+  unread?: boolean;
+  type: string;
+}) {
+  return (
+    <Card
+      padding="md"
+      className={unread ? 'border-primary/25 bg-primary/5' : undefined}
+      data-notification-type={type}
+    >
+      {children}
+    </Card>
+  );
+}
+
+function MiddlemanNotification({
+  n,
+  payload,
+  when,
+  markRead,
+}: {
+  n: Notification;
+  payload: Record<string, string>;
+  when: string;
+  markRead: (id: string) => void;
+}) {
   const [loading, setLoading] = useState(false);
-  const [trade, setTrade] = useState<any>(null);
+  const [trade, setTrade] = useState<{ middlemanId?: string; middleman?: { username?: string } } | null>(
+    null
+  );
 
-  useEffect(()=>{
+  useEffect(() => {
     let mounted = true;
-    (async ()=>{
-      try{
+    (async () => {
+      try {
         const id = payload.tradeId || payload.tradeid;
-        if(!id) return;
+        if (!id) return;
         const r = await fetch(`/api/admin/trades/${id}`, { credentials: 'same-origin' });
-        if(!mounted) return;
-        if(r.ok){ const j = await r.json(); setTrade(j.trade); }
-      }catch(e){ }
+        if (!mounted) return;
+        if (r.ok) {
+          const j = await r.json();
+          setTrade(j.trade);
+        }
+      } catch {
+        /* ignore */
+      }
     })();
-    return ()=>{ mounted = false };
-  },[payload]);
+    return () => {
+      mounted = false;
+    };
+  }, [payload]);
 
-  useEffect(()=>{
-    if(trade && trade.middlemanId){
-      // auto-dismiss the notification if trade already assigned
-      try{ markRead(n.id); }catch(e){}
+  useEffect(() => {
+    if (trade && trade.middlemanId) {
+      try {
+        markRead(n.id);
+      } catch {
+        /* ignore */
+      }
     }
-  },[trade]);
+  }, [trade, n.id, markRead]);
 
   return (
-    <div className={`p-4 rounded ${n.read? 'bg-white/3' : 'bg-white/6'}`}>
-      <div className="flex justify-between items-start gap-4">
-        <div>
-          <div className="font-semibold">Middleman requested</div>
-          <div className="text-sm text-slate-400 mt-1">{payload.tradeId ? `Trade ID: ${payload.tradeId}` : 'A trade needs a middleman.'}</div>
-          <div className="text-xs text-slate-500 mt-2">Received: {when}</div>
+    <NotificationCard unread={!n.read} type={n.type}>
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 mb-2">
+            <h3 className="font-semibold text-white">Middleman requested</h3>
+            <Badge variant="warning">Middleman</Badge>
+          </div>
+          <p className="text-sm text-slate-400">
+            {payload.tradeId ? `Trade ID: ${payload.tradeId}` : 'A trade needs a middleman.'}
+          </p>
+          <p className="text-xs text-slate-500 mt-3">Received: {when}</p>
           {trade && trade.middlemanId && (
-            <div className="text-sm text-white/70 mt-2">Already assigned: {trade.middleman?.username || trade.middlemanId}</div>
+            <Alert variant="info" className="mt-3">
+              Already assigned: {trade.middleman?.username || trade.middlemanId}
+            </Alert>
           )}
         </div>
-        <div className="flex items-center gap-2">
-          <button disabled={loading} onClick={()=>{ markRead(n.id); }} className="px-3 py-1 bg-red-600 text-white rounded">Dismiss</button>
-          {payload.roomId && <button disabled={loading} onClick={()=>{ window.location.href = `/rooms/${payload.roomId}`; }} className="px-3 py-1 bg-green-600 text-white rounded">Open Chat</button>}
-          {payload.tradeId && <button disabled={loading} onClick={()=>{ window.location.href = `/trades/${payload.tradeId}`; }} className="px-3 py-1 bg-white/5 text-white rounded">View Trade</button>}
-          {/* Accept only if trade not assigned yet */}
-          {!trade && <div className="text-sm text-slate-500">Checking trade...</div>}
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <Button variant="ghost" size="sm" disabled={loading} onClick={() => markRead(n.id)}>
+            Dismiss
+          </Button>
+          {payload.roomId && (
+            <Button
+              variant="primary"
+              size="sm"
+              disabled={loading}
+              onClick={() => {
+                window.location.href = `/rooms/${payload.roomId}`;
+              }}
+            >
+              Open Chat
+            </Button>
+          )}
+          {payload.tradeId && (
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={loading}
+              onClick={() => {
+                window.location.href = `/trades/${payload.tradeId}`;
+              }}
+            >
+              View Trade
+            </Button>
+          )}
+          {!trade && <span className="text-sm text-slate-500 px-2">Checking trade…</span>}
           {trade && !trade.middlemanId && (
-            <button disabled={loading} onClick={async ()=>{
-              setLoading(true);
-              try{
-                const r = await fetch('/api/trades/accept-middleman', { method: 'POST', credentials: 'same-origin', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ tradeId: payload.tradeId }) });
-                const j = await r.json().catch(()=>({}));
-                if(r.ok){ alert('You are now the middleman for this trade'); markRead(n.id); window.location.href = `/trades/${payload.tradeId}`; return; }
-                alert('Error: ' + (j.error || r.statusText || 'Unable to accept') + (j.trade ? '\n\n' + JSON.stringify(j.trade, null, 2) : ''));
-              }catch(e){ alert('Network error'); }
-              setLoading(false);
-            }} className="px-3 py-1 bg-blue-600 text-white rounded">Accept</button>
+            <Button
+              variant="secondary"
+              size="sm"
+              loading={loading}
+              disabled={loading}
+              onClick={async () => {
+                setLoading(true);
+                try {
+                  const r = await fetch('/api/trades/accept-middleman', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tradeId: payload.tradeId }),
+                  });
+                  const j = await r.json().catch(() => ({}));
+                  if (r.ok) {
+                    alert('You are now the middleman for this trade');
+                    markRead(n.id);
+                    window.location.href = `/trades/${payload.tradeId}`;
+                    return;
+                  }
+                  alert(
+                    'Error: ' +
+                      (j.error || r.statusText || 'Unable to accept') +
+                      (j.trade ? '\n\n' + JSON.stringify(j.trade, null, 2) : '')
+                  );
+                } catch {
+                  alert('Network error');
+                }
+                setLoading(false);
+              }}
+            >
+              Accept
+            </Button>
           )}
         </div>
       </div>
-    </div>
+    </NotificationCard>
   );
 }

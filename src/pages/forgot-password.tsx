@@ -1,9 +1,28 @@
 import { useState } from 'react';
-import Header from '../components/Header';
+import AuthShell from '../components/layout/AuthShell';
+import { Button, Input, Alert, Card, CardTitle, CardDescription } from '../components/ui';
 import { isValidEmail, mapAuthError } from '../lib/password-reset';
 
 const SUCCESS_MESSAGE =
   'If an account exists for that email, a reset link has been sent.';
+
+function LockIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+  );
+}
+
+function MailIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+      <path d="M22 6l-10 7L2 6" />
+    </svg>
+  );
+}
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -66,54 +85,66 @@ export default function ForgotPassword() {
   };
 
   return (
-    <>
-      <Header />
-      <div className="min-h-screen pt-36">
-        <div className="container mx-auto px-6 max-w-md">
-          <div className="form-dark">
-            <h1 className="text-2xl font-bold mb-4">Forgot password</h1>
-            <p className="text-sm text-slate-300 mb-4">
-              Enter your email and we&apos;ll send you a link to reset your password.
-            </p>
-
-            {success ? (
-              <div className="p-3 rounded bg-green-900/30 text-green-200 border border-green-600">
-                {SUCCESS_MESSAGE}
-              </div>
-            ) : (
-              <form onSubmit={submit} className="space-y-3">
-                <input
-                  className="w-full p-3 rounded"
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={sending}
-                  autoComplete="email"
-                />
-                {error && (
-                  <div className="p-3 rounded bg-red-900/30 text-red-200 border border-red-600">
-                    {error}
-                  </div>
-                )}
-                <button
-                  type="submit"
-                  className="btn-primary px-4 py-2 rounded w-full"
-                  disabled={sending}
-                >
-                  {sending ? 'Sending...' : 'Send Reset Link'}
-                </button>
-              </form>
-            )}
-
-            <p className="mt-4 text-sm text-slate-400">
-              <a href="/login" className="underline hover:text-white">
-                Back to sign in
-              </a>
-            </p>
-          </div>
+    <AuthShell
+      title="Forgot password"
+      subtitle="Enter your email and we'll send you a link to reset your password."
+      footer={
+        <p className="text-sm text-center text-slate-400">
+          <a href="/login" className="text-primary font-medium hover:underline">
+            Back to sign in
+          </a>
+        </p>
+      }
+    >
+      <div className="flex justify-center mb-6">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20 text-primary">
+          <LockIcon className="h-7 w-7" />
         </div>
       </div>
-    </>
+
+      {success ? (
+        <Card padding="md" className="border-emerald-500/20 bg-emerald-500/5">
+          <div className="flex items-start gap-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-300">
+              <MailIcon className="h-5 w-5" />
+            </div>
+            <div>
+              <CardTitle className="text-emerald-100">Check your inbox</CardTitle>
+              <CardDescription className="text-emerald-200/70 mt-2">
+                {SUCCESS_MESSAGE} The link will expire after a short time for your security.
+              </CardDescription>
+              <Button
+                variant="outline"
+                className="mt-4"
+                onClick={() => {
+                  setSuccess(false);
+                  setEmail('');
+                }}
+              >
+                Send another link
+              </Button>
+            </div>
+          </div>
+        </Card>
+      ) : (
+        <form onSubmit={submit} className="space-y-4">
+          <Input
+            label="Email address"
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={sending}
+            autoComplete="email"
+          />
+
+          {error && <Alert variant="error">{error}</Alert>}
+
+          <Button type="submit" className="w-full" size="lg" loading={sending}>
+            Send reset link
+          </Button>
+        </form>
+      )}
+    </AuthShell>
   );
 }

@@ -1,30 +1,43 @@
-import Header from '../components/Header';
+import PageShell from '../components/layout/PageShell';
+import Card from '../components/ui/Card';
 
-export default function FAQ(){
+const faqs = [
+  {
+    question: 'How does a middleman work?',
+    answer: 'A middleman holds assets in escrow until both parties confirm the trade.',
+  },
+  {
+    question: 'How long does it take?',
+    answer: 'Most trades complete within hours depending on verification speed.',
+  },
+  {
+    question: 'How much does it cost?',
+    answer: 'Fees depend on trade value; fees are shown before confirmation.',
+  },
+  {
+    question: 'What happens if something goes wrong?',
+    answer: 'Open a dispute and our team will review evidence and resolve fairly.',
+  },
+];
+
+export default function FAQ() {
   return (
-    <div className="min-h-screen bg-deep text-white">
-      <Header />
-      <main className="pt-36 container mx-auto px-6 max-w-3xl">
-        <h1 className="text-3xl font-bold">Frequently Asked Questions</h1>
-        <div className="mt-6 space-y-3">
-          <details className="card-glass p-3">
-            <summary className="font-semibold">How does a middleman work?</summary>
-            <div className="mt-2 text-slate-300">A middleman holds assets in escrow until both parties confirm the trade.</div>
-          </details>
-          <details className="card-glass p-3">
-            <summary className="font-semibold">How long does it take?</summary>
-            <div className="mt-2 text-slate-300">Most trades complete within hours depending on verification speed.</div>
-          </details>
-          <details className="card-glass p-3">
-            <summary className="font-semibold">How much does it cost?</summary>
-            <div className="mt-2 text-slate-300">Fees depend on trade value; fees are shown before confirmation.</div>
-          </details>
-          <details className="card-glass p-3">
-            <summary className="font-semibold">What happens if something goes wrong?</summary>
-            <div className="mt-2 text-slate-300">Open a dispute and our team will review evidence and resolve fairly.</div>
-          </details>
-        </div>
-      </main>
-    </div>
+    <PageShell title="Frequently Asked Questions" maxWidth="md">
+      <div className="space-y-3">
+        {faqs.map((item) => (
+          <Card key={item.question} padding="sm" hover className="group">
+            <details className="[&_summary::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-2 px-1 font-semibold text-white marker:content-none">
+                <span>{item.question}</span>
+                <span className="shrink-0 text-slate-500 transition-transform group-open:rotate-180">
+                  ▾
+                </span>
+              </summary>
+              <p className="mt-2 pb-2 px-1 text-sm text-slate-300 leading-relaxed">{item.answer}</p>
+            </details>
+          </Card>
+        ))}
+      </div>
+    </PageShell>
   );
 }

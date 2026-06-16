@@ -1,5 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import Header from '../../components/Header';
+import { useEffect, useState } from 'react';
+import AdminShell from '../../components/layout/AdminShell';
+import Badge from '../../components/ui/Badge';
+import Button from '../../components/ui/Button';
+import Alert from '../../components/ui/Alert';
+import EmptyState from '../../components/ui/EmptyState';
+import { SkeletonTable } from '../../components/ui/Skeleton';
+import { Table, THead, TBody, TR, TH, TD } from '../../components/ui/Table';
 import { AUTH_AUDIT_ACTION_LABELS } from '../../lib/audit-log';
 
 type AuditLogEntry = {
@@ -28,17 +34,15 @@ function formatTimestamp(value: string) {
   }
 }
 
-function actionBadgeClass(action: string) {
+function actionBadgeVariant(
+  action: string
+): 'success' | 'danger' | 'warning' | 'info' | 'default' {
   if (action.includes('SUCCESS') || action.includes('VERIFICATION') || action.includes('REGISTRATION')) {
-    return 'bg-emerald-900/40 text-emerald-200 border-emerald-700/50';
+    return 'success';
   }
-  if (action.includes('FAILURE')) {
-    return 'bg-red-900/40 text-red-200 border-red-700/50';
-  }
-  if (action.includes('RESET')) {
-    return 'bg-amber-900/40 text-amber-200 border-amber-700/50';
-  }
-  return 'bg-blue-900/40 text-blue-200 border-blue-700/50';
+  if (action.includes('FAILURE')) return 'danger';
+  if (action.includes('RESET')) return 'warning';
+  return 'info';
 }
 
 export default function AdminAuditLogs() {
@@ -84,99 +88,95 @@ export default function AdminAuditLogs() {
     })();
   }, []);
 
-  if (loading) return <div className="min-h-screen pt-24 px-6 text-white">Loading...</div>;
-  if (!me) return <div className="min-h-screen pt-24 px-6 text-white">Please log in as a platform admin.</div>;
-  if (me.role !== 'ADMIN') return <div className="min-h-screen pt-24 px-6 text-white">Forbidden</div>;
+  if (loading) {
+    return (
+      <AdminShell title="Audit Logs" description="Loading authentication events…">
+        <SkeletonTable rows={8} />
+      </AdminShell>
+    );
+  }
+
+  if (!me) {
+    return (
+      <AdminShell title="Audit Logs">
+        <Alert variant="warning">Please log in as a platform admin.</Alert>
+      </AdminShell>
+    );
+  }
+
+  if (me.role !== 'ADMIN') {
+    return (
+      <AdminShell title="Audit Logs">
+        <Alert variant="error" title="Forbidden">
+          You do not have permission to access this area.
+        </Alert>
+      </AdminShell>
+    );
+  }
 
   return (
-    <div>
-      <Header />
-      <main className="min-h-screen bg-neutral-900 text-white pt-24 px-6 pb-12">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
-            <div>
-              <h1 className="text-2xl font-semibold mb-1">Authentication Audit Logs</h1>
-              <p className="text-slate-300 text-sm">
-                Recent registration, login, verification, and password reset events.
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <a href="/admin" className="px-3 py-2 rounded border border-neutral-600 text-sm hover:bg-neutral-800">
-                Back to Admin
-              </a>
-            </div>
-          </div>
+    <AdminShell
+      title="Authentication Audit Logs"
+      description="Recent registration, login, verification, and password reset events."
+    >
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <select
+          value={actionFilter}
+          onChange={(e) => setActionFilter(e.target.value)}
+          className="app-input py-2 px-3 text-sm flex-1 sm:max-w-xs"
+        >
+          <option value="">All auth events</option>
+          {ACTION_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <Button variant="primary" size="md" onClick={() => loadLogs(actionFilter)}>
+          Refresh
+        </Button>
+      </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 mb-4">
-            <select
-              value={actionFilter}
-              onChange={(e) => setActionFilter(e.target.value)}
-              className="px-3 py-2 rounded border bg-neutral-800 border-neutral-700 text-white text-sm"
-            >
-              <option value="">All auth events</option>
-              {ACTION_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <button
-              type="button"
-              onClick={() => loadLogs(actionFilter)}
-              className="px-4 py-2 rounded bg-primary text-white text-sm"
-            >
-              Refresh
-            </button>
-          </div>
+      {error && (
+        <Alert variant="error" className="mb-4">
+          {error}
+        </Alert>
+      )}
 
-          {error && (
-            <div className="mb-4 p-3 rounded bg-red-900/30 border border-red-700 text-red-200 text-sm">
-              {error}
-            </div>
-          )}
-
-          <div className="overflow-x-auto bg-neutral-800 p-4 rounded">
-            <table className="w-full table-auto border-collapse text-sm">
-              <thead>
-                <tr className="text-left border-b border-neutral-700 bg-neutral-700">
-                  <th className="p-3 text-white">Timestamp</th>
-                  <th className="p-3 text-white">Event</th>
-                  <th className="p-3 text-white">Email</th>
-                  <th className="p-3 text-white">User ID</th>
-                  <th className="p-3 text-white">IP Address</th>
-                </tr>
-              </thead>
-              <tbody>
-                {logs.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="p-6 text-center text-slate-400">
-                      No authentication events recorded yet.
-                    </td>
-                  </tr>
-                ) : (
-                  logs.map((log) => (
-                    <tr key={log.id} className="border-t border-neutral-700">
-                      <td className="p-3 text-slate-300 whitespace-nowrap">
-                        {formatTimestamp(log.createdAt)}
-                      </td>
-                      <td className="p-3">
-                        <span
-                          className={`inline-flex px-2 py-1 rounded border text-xs font-medium ${actionBadgeClass(log.action)}`}
-                        >
-                          {log.label}
-                        </span>
-                      </td>
-                      <td className="p-3 text-slate-300">{log.email || '—'}</td>
-                      <td className="p-3 text-slate-400 font-mono text-xs">{log.userId || '—'}</td>
-                      <td className="p-3 text-slate-400 font-mono text-xs">{log.ipAddress || '—'}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </main>
-    </div>
+      {logs.length === 0 ? (
+        <EmptyState
+          icon="📜"
+          title="No events recorded"
+          description="No authentication events match your filter yet."
+        />
+      ) : (
+        <Table>
+          <THead>
+            <TR>
+              <TH>Timestamp</TH>
+              <TH>Event</TH>
+              <TH>Email</TH>
+              <TH>User ID</TH>
+              <TH>IP Address</TH>
+            </TR>
+          </THead>
+          <TBody>
+            {logs.map((log) => (
+              <TR key={log.id}>
+                <TD className="whitespace-nowrap text-slate-300">
+                  {formatTimestamp(log.createdAt)}
+                </TD>
+                <TD>
+                  <Badge variant={actionBadgeVariant(log.action)}>{log.label}</Badge>
+                </TD>
+                <TD className="text-slate-300">{log.email || '—'}</TD>
+                <TD className="font-mono text-xs text-slate-400">{log.userId || '—'}</TD>
+                <TD className="font-mono text-xs text-slate-400">{log.ipAddress || '—'}</TD>
+              </TR>
+            ))}
+          </TBody>
+        </Table>
+      )}
+    </AdminShell>
   );
 }

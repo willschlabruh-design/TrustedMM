@@ -161,7 +161,12 @@ export default function Header(){
               </>
             )}
             {user && (
+              <>
+                <a href="/settings" className="hidden lg:inline px-3 py-2 rounded hover:bg-white/10 text-sm">
+                  Settings
+                </a>
                 <a href="/dashboard" className="bg-white/10 px-3 py-2 rounded">Dashboard</a>
+              </>
             )}
             {/* Primary CTA - require login */}
             <button onClick={() => { if(user) router.push('/create-trade'); else router.push(`/login?next=/create-trade`); }} className="ml-2 bg-accent px-4 py-2 rounded-md text-black font-semibold hover:scale-105 transition-transform">Start Trade</button>
