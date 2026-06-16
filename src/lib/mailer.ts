@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 import { getAppUrl } from './auth-utils';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_EMAIL = process.env.FROM_EMAIL || 'no-reply@example.com';
+const FROM_EMAIL = process.env.FROM_EMAIL || 'no-reply@trustedmm.com';
 
 let resend: Resend | null = null;
 if (RESEND_API_KEY) {

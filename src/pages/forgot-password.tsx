@@ -47,10 +47,16 @@ export default function ForgotPassword() {
 
       if (!res.ok) {
         setError(data.error || mapAuthError(undefined, 'forgot'));
+        console.error('[password-reset] API error response', {
+          status: res.status,
+          error: data.error,
+          detail: (data as { detail?: string }).detail,
+        });
         return;
       }
 
       setSuccess(true);
+      console.log('[password-reset] API success', { message: data.message });
     } catch (err) {
       console.error('Forgot password network error:', err);
       setError(mapAuthError(undefined, 'forgot'));
