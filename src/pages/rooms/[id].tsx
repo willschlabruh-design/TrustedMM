@@ -255,7 +255,7 @@ function AdminToolbar({ room, router }: { room: Room; router: ReturnType<typeof 
               loading={actionLoading === 'middleman'}
               onClick={() =>
                 runAction('middleman', async () => {
-                  if (!confirm('Accept middleman role for this trade?')) return;
+                  if (!confirm('Accept escrow assignment for this trade?')) return;
                   try {
                     const resp = await fetch('/api/trades/accept-middleman', {
                       method: 'POST',
@@ -263,7 +263,7 @@ function AdminToolbar({ room, router }: { room: Room; router: ReturnType<typeof 
                       body: JSON.stringify({ tradeId: room.trade!.id }),
                     });
                     if (resp.ok) {
-                      alert('You are now the middleman for this trade');
+                      alert('You have accepted the escrow assignment for this trade');
                       window.location.reload();
                     } else {
                       const j = await resp.json();
@@ -275,7 +275,7 @@ function AdminToolbar({ room, router }: { room: Room; router: ReturnType<typeof 
                 })
               }
             >
-              Join as Middleman
+              Accept Escrow Assignment
             </Button>
           )}
 

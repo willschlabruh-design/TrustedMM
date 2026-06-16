@@ -7,8 +7,7 @@ export default function FindMiddlemanRedirect() {
   const router = useRouter();
 
   useEffect(() => {
-    const timer = window.setTimeout(() => router.replace('/create-trade'), 4000);
-    return () => window.clearTimeout(timer);
+    router.replace('/create-trade');
   }, [router]);
 
   return (

@@ -459,7 +459,7 @@ function MiddlemanNotification({
                   });
                   const j = await r.json().catch(() => ({}));
                   if (r.ok) {
-                    alert('You have been assigned as the middleman for this trade');
+                    alert('Escrow assignment accepted for this trade');
                     markRead(n.id);
                     window.location.href = `/trades/${payload.tradeId}`;
                     return;
@@ -475,7 +475,7 @@ function MiddlemanNotification({
                 setLoading(false);
               }}
             >
-              Accept
+              Accept Assignment
             </Button>
           )}
         </div>

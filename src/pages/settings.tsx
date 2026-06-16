@@ -29,7 +29,7 @@ import {
   isValidUsername,
   type PasswordStrength,
 } from '../lib/password-strength';
-import { applyTheme } from '../lib/theme';
+import { applyTheme, applyCompactUi } from '../lib/theme';
 import type { ProfileVisibility, ThemePreference, UserSettingsData } from '../lib/user-settings';
 import { cn } from '../lib/cn';
 
@@ -236,6 +236,7 @@ export default function Settings() {
     setUser(data.user);
     setSettings(data.settings);
     applyTheme(data.settings.theme);
+    applyCompactUi(data.settings.compactUi);
   }, []);
 
   useEffect(() => {
@@ -258,6 +259,9 @@ export default function Settings() {
         setSettings(data.settings);
         if (typeof body.theme === 'string') {
           applyTheme(data.settings.theme);
+        }
+        if (typeof body.compactUi === 'boolean') {
+          applyCompactUi(data.settings.compactUi);
         }
       }
       return data;
@@ -1282,6 +1286,8 @@ function AppearanceTab({
   const [themeSaving, setThemeSaving] = useState(false);
   const [compactSaving, setCompactSaving] = useState(false);
   const [error, setError] = useState('');
+  const [themeSuccess, setThemeSuccess] = useState('');
+  const [compactSuccess, setCompactSuccess] = useState('');
 
   useEffect(() => {
     setTheme(settings.theme);
@@ -1290,6 +1296,7 @@ function AppearanceTab({
 
   const themes: Array<{ id: ThemePreference; label: string; desc: string }> = [
     { id: 'dark', label: 'Dark', desc: 'Premium dark fintech theme' },
+    { id: 'light', label: 'Light', desc: 'Clean light interface for daytime use' },
     { id: 'system', label: 'System', desc: 'Match your device settings' },
   ];
 
@@ -1297,9 +1304,11 @@ function AppearanceTab({
     setTheme(next);
     applyTheme(next);
     setError('');
+    setThemeSuccess('');
     setThemeSaving(true);
     try {
       await onPatch({ theme: next });
+      setThemeSuccess('Theme saved.');
     } catch (err) {
       setTheme(settings.theme);
       applyTheme(settings.theme);
@@ -1311,12 +1320,16 @@ function AppearanceTab({
 
   async function toggleCompact(next: boolean) {
     setCompactUi(next);
+    applyCompactUi(next);
     setError('');
+    setCompactSuccess('');
     setCompactSaving(true);
     try {
       await onPatch({ compactUi: next });
+      setCompactSuccess('Display preference saved.');
     } catch (err) {
       setCompactUi(settings.compactUi);
+      applyCompactUi(settings.compactUi);
       setError(err instanceof Error ? err.message : 'Failed to save display preference.');
     } finally {
       setCompactSaving(false);
@@ -1330,7 +1343,7 @@ function AppearanceTab({
           <CardTitle>Theme</CardTitle>
           <CardDescription>Customize how the platform looks for you.</CardDescription>
         </CardHeader>
-        <div className="grid sm:grid-cols-2 gap-3">
+        <div className="grid sm:grid-cols-3 gap-3">
           {themes.map((item) => (
             <button
               key={item.id}
@@ -1347,9 +1360,9 @@ function AppearanceTab({
               <div
                 className={cn(
                   'h-16 rounded-lg mb-3 border border-white/10',
-                  item.id === 'dark'
-                    ? 'bg-gradient-to-br from-[#081229] to-[#050b1a]'
-                    : 'bg-gradient-to-br from-slate-700 to-slate-900'
+                  item.id === 'dark' && 'bg-gradient-to-br from-[#081229] to-[#050b1a]',
+                  item.id === 'light' && 'bg-gradient-to-br from-slate-100 to-slate-200',
+                  item.id === 'system' && 'bg-gradient-to-br from-slate-700 to-slate-200'
                 )}
               />
               <p className="text-sm font-medium text-white">{item.label}</p>
@@ -1358,6 +1371,11 @@ function AppearanceTab({
           ))}
         </div>
         {themeSaving && <p className="mt-3 text-xs text-slate-400">Saving theme…</p>}
+        {themeSuccess && (
+          <Alert variant="success" className="mt-4">
+            {themeSuccess}
+          </Alert>
+        )}
       </Card>
 
       <Card padding="lg">
@@ -1372,6 +1390,12 @@ function AppearanceTab({
           onChange={toggleCompact}
           disabled={compactSaving}
         />
+        {compactSaving && <p className="mt-3 text-xs text-slate-400">Saving…</p>}
+        {compactSuccess && (
+          <Alert variant="success" className="mt-4">
+            {compactSuccess}
+          </Alert>
+        )}
         {error && (
           <Alert variant="error" className="mt-4">
             {error}

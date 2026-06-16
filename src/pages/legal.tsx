@@ -53,7 +53,7 @@ const sections = [
   },
   {
     title: '13. Contact',
-    body: 'For legal inquiries, contact support via the Contact page or email legal@trusted.example (replace with your legal contact).',
+    body: 'For legal inquiries, contact us via the Contact page or email william.schlanbusch@gmail.com.',
   },
 ];
 

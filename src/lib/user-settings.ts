@@ -1,7 +1,7 @@
 import { prisma } from './prisma';
 
 export type ProfileVisibility = 'PUBLIC' | 'TRADES_ONLY' | 'PRIVATE';
-export type ThemePreference = 'dark' | 'system';
+export type ThemePreference = 'dark' | 'light' | 'system';
 
 export type UserSettingsData = {
   notifyTradeUpdates: boolean;
@@ -55,7 +55,7 @@ export function serializeUserSettings(settings: {
     notifyMarketing: settings.notifyMarketing,
     profileVisibility:
       visibility === 'PUBLIC' || visibility === 'PRIVATE' ? visibility : 'TRADES_ONLY',
-    theme: theme === 'system' ? 'system' : 'dark',
+    theme: theme === 'light' || theme === 'system' ? theme : 'dark',
     compactUi: settings.compactUi,
   };
 }
@@ -80,7 +80,7 @@ export function parseSettingsPatch(body: Record<string, unknown>): Partial<UserS
     patch.profileVisibility = body.profileVisibility;
   }
 
-  if (body.theme === 'dark' || body.theme === 'system') {
+  if (body.theme === 'dark' || body.theme === 'light' || body.theme === 'system') {
     patch.theme = body.theme;
   }
 

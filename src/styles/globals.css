@@ -456,3 +456,105 @@ body{ background:var(--bg); color:#fff; }
   .app-chat-layout { grid-template-columns: 320px 1fr; }
 }
 .stat-card.reveal { opacity: 1 !important; transform: translateY(0) !important; }
+
+/* ─── Theme: light + system-light ─── */
+html.theme-light,
+html.theme-system-light {
+  color-scheme: light;
+  --bg: #f1f5f9;
+}
+
+html.theme-light body,
+html.theme-system-light body {
+  background: var(--bg);
+  color: #0f172a;
+}
+
+html.theme-light .bg-app-gradient,
+html.theme-system-light .bg-app-gradient {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.08), transparent),
+    linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+html.theme-light .site-header,
+html.theme-system-light .site-header {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 250, 252, 0.88));
+  border-bottom-color: rgba(15, 23, 42, 0.08);
+}
+
+html.theme-light .text-white,
+html.theme-system-light .text-white {
+  color: #0f172a;
+}
+
+html.theme-light .text-slate-200,
+html.theme-system-light .text-slate-200,
+html.theme-light .text-slate-300,
+html.theme-system-light .text-slate-300 {
+  color: #334155;
+}
+
+html.theme-light .text-slate-400,
+html.theme-system-light .text-slate-400,
+html.theme-light .text-slate-500,
+html.theme-system-light .text-slate-500 {
+  color: #64748b;
+}
+
+html.theme-light .app-card,
+html.theme-system-light .app-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9));
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.04), 0 8px 32px rgba(15, 23, 42, 0.06);
+}
+
+html.theme-light .app-input,
+html.theme-system-light .app-input {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(15, 23, 42, 0.12);
+  color: #0f172a;
+}
+
+html.theme-light .app-input::placeholder,
+html.theme-system-light .app-input::placeholder {
+  color: rgba(15, 23, 42, 0.4);
+}
+
+html.theme-light .site-footer,
+html.theme-system-light .site-footer {
+  color: rgba(15, 23, 42, 0.65);
+  border-top-color: rgba(15, 23, 42, 0.08);
+}
+
+html.theme-light .border-white\/8,
+html.theme-system-light .border-white\/8,
+html.theme-light .border-white\/10,
+html.theme-system-light .border-white\/10 {
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+html.theme-light .bg-white\/3,
+html.theme-system-light .bg-white\/3,
+html.theme-light .bg-white\/6,
+html.theme-system-light .bg-white\/6 {
+  background-color: rgba(15, 23, 42, 0.04);
+}
+
+/* ─── Compact UI density ─── */
+html.compact-ui .app-page-main {
+  padding-top: calc(var(--site-header-height) + 1.25rem);
+  padding-bottom: 2rem;
+}
+
+html.compact-ui .app-card {
+  border-radius: 0.75rem;
+}
+
+html.compact-ui .app-page-main h1 {
+  font-size: 1.75rem;
+}
+
+html.compact-ui .app-stat-card p.text-3xl {
+  font-size: 1.75rem;
+}

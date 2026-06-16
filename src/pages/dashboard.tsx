@@ -33,9 +33,10 @@ type DashboardStats = {
 const QUICK_ACTIONS = [
   {
     href: '/create-trade',
-    title: 'Request a Trade',
-    description: 'Submit a trade request for TrustedMM review and middleman assignment.',
-    icon: '⚡',
+    title: 'Request Trade',
+    description:
+      'Submit a trade request. TrustedMM reviews it and assigns a verified middleman automatically.',
+    icon: '📝',
     accent: 'from-amber-500/20 to-orange-500/10',
   },
   {
@@ -196,7 +197,7 @@ export default function Dashboard() {
               icon="📭"
               title="No recent activity"
               description="When you start trades, send messages, or receive reviews, they'll show up here."
-              actionLabel="Start a Trade"
+              actionLabel="Request Trade"
               actionHref="/create-trade"
             />
           )}
