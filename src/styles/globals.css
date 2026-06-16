@@ -2,7 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-:root{ --bg: #081229 }
+:root{
+  --bg: #081229;
+  --site-header-height: 4.5rem;
+}
+@media (min-width: 768px) {
+  :root {
+    --site-header-height: 4.75rem;
+  }
+}
 html,body,#__next{ height:100%; }
 body{ background:var(--bg); color:#fff; }
 .container{ max-width:1100px; }
@@ -241,6 +249,77 @@ body{ background:var(--bg); color:#fff; }
 @keyframes trustFadeUp {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Homepage hero */
+.hero-section {
+  padding-top: calc(var(--site-header-height) + clamp(2rem, 5vw, 3.5rem));
+  padding-bottom: clamp(3.5rem, 8vh, 6rem);
+  min-height: calc(100svh - var(--site-header-height));
+  display: flex;
+  align-items: center;
+}
+.hero-section-inner {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: clamp(2.5rem, 5vw, 4rem);
+}
+@media (min-width: 768px) {
+  .hero-section-inner {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(2rem, 4vw, 3.5rem);
+  }
+}
+@media (min-width: 1024px) {
+  .hero-section-inner {
+    gap: clamp(3rem, 5vw, 5rem);
+  }
+}
+.hero-trust-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem 1.25rem;
+  max-width: 28rem;
+}
+@media (min-width: 480px) {
+  .hero-trust-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.hero-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  color: rgba(226, 232, 240, 0.92);
+}
+.hero-trust-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  font-size: 0.7rem;
+}
+.hero-dashboard-wrap {
+  width: 100%;
+  max-width: 28rem;
+  margin-inline: auto;
+}
+@media (min-width: 768px) {
+  .hero-dashboard-wrap {
+    max-width: none;
+    margin-inline: 0;
+    justify-self: end;
+  }
 }
 
 /* How it works timeline */

@@ -125,7 +125,7 @@ export default function Header(){
               )}
             </button>
             <a href="/">
-              <img src="/api/assets/logo" alt="MiddleMan" className="w-32 h-auto rounded-lg shadow-sm" />
+              <img src="/api/assets/logo" alt="MiddleMan" className="h-10 w-auto sm:h-11 rounded-lg shadow-sm" />
             </a>
             <nav className="hidden md:flex gap-3 items-center ml-4">
               {navItems.map(item => {
