@@ -129,7 +129,14 @@ export default function Login(){
               </div>
             )}
             {!requiresVerification && !requiresEmailVerification && (
-              <button type="submit" className="btn-primary px-4 py-2 rounded w-full">Sign in</button>
+              <>
+                <button type="submit" className="btn-primary px-4 py-2 rounded w-full">Sign in</button>
+                <p className="text-sm text-center text-slate-400">
+                  <a href="/forgot-password" className="underline hover:text-white">
+                    Forgot your password?
+                  </a>
+                </p>
+              </>
             )}
           </form>
           </div>

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getAppUrl } from '../../../lib/auth-utils';
+import { getAppUrl, getAuthCallbackUrl } from '../../../lib/auth-utils';
 import { createSupabaseApiClient } from '../../../lib/supabase/api';
 import { prisma } from '../../../lib/prisma';
 import { syncVerifiedFromSupabase } from '../../../lib/profile-sync';
@@ -37,5 +37,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return redirect(`${appUrl}/dashboard`);
   }
 
-  return redirect(`${appUrl}/auth/callback`);
+  return redirect(getAuthCallbackUrl());
 }
