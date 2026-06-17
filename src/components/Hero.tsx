@@ -1,15 +1,22 @@
-import DashboardPreview from './DashboardPreview';
+import TrustProtectionCard from './TrustProtectionCard';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
-import { BadgeCheck, Lock, Scale, ShieldCheck } from 'lucide-react';
+import { BadgeCheck, Clock, Lock, Scale, ShieldCheck, UserCheck, CircleCheck } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import BrandLogo from './BrandLogo';
 
-const TRUST_BADGES: Array<{ icon: LucideIcon; label: string }> = [
-  { icon: BadgeCheck, label: 'Verified Platform' },
+const TRUST_INDICATORS: Array<{ icon: LucideIcon; label: string }> = [
+  { icon: UserCheck, label: 'Identity Verified' },
   { icon: Lock, label: 'Secure Escrow' },
   { icon: Scale, label: 'Dispute Protection' },
-  { icon: ShieldCheck, label: 'Identity Verification' },
+  { icon: BadgeCheck, label: 'Verified Escrow Agents' },
+];
+
+const SOCIAL_PROOF: Array<{ icon: LucideIcon; label: string }> = [
+  { icon: ShieldCheck, label: 'Trusted Platform' },
+  { icon: CircleCheck, label: '99.9% Completion Rate' },
+  { icon: UserCheck, label: 'Manual Review Available' },
+  { icon: Clock, label: 'Fast Response Times' },
 ];
 
 export default function Hero() {
@@ -36,34 +43,32 @@ export default function Hero() {
     <section className="hero-section relative overflow-hidden bg-animated-gradient">
       <div className="container mx-auto px-6 relative z-20">
         <div className="hero-section-inner">
-          <div className="hero-content max-w-2xl">
-            {/* Brand block */}
+          <div className="hero-content">
             <div className="hero-brand">
-              <BrandLogo
-                width={56}
-                height={56}
-                priority
-                className="ring-1 ring-white/10 rounded-xl"
-              />
+              <BrandLogo width={56} height={56} priority className="ring-1 ring-white/10 rounded-xl" />
               <div>
                 <p className="hero-eyebrow">Verified Platform</p>
                 <p className="hero-tagline">Secure digital asset escrow</p>
               </div>
             </div>
 
-            {/* Value proposition */}
             <div className="hero-copy">
-              <h1 className="hero-headline">Trade Safely. Every Time.</h1>
+              <h1 className="hero-headline">
+                <span className="hero-headline-line">
+                  Trade <span className="text-accent">Safely</span>.
+                </span>
+                <span className="hero-headline-line">Every Time.</span>
+              </h1>
               <p className="hero-description">
-                TrustedMM holds funds in escrow, verifies every party, and manages trades end to
-                end — so buyers and sellers never deal with each other directly.
+                TrustedMM holds funds in escrow, verifies every party, and manages trades end-to-end
+                so buyers and sellers never deal directly.
               </p>
             </div>
 
-            {/* Primary action */}
             <div className="hero-actions">
               <div className="flex flex-wrap gap-3">
                 <button
+                  type="button"
                   onClick={handleStartTrade}
                   className="bg-accent text-accent-foreground px-6 py-3 rounded-xl font-semibold hover:bg-accent-hover transition-colors duration-200 text-base"
                 >
@@ -79,24 +84,38 @@ export default function Hero() {
               <p className="hero-cta-hint">Platform-managed assignment · No browsing required</p>
             </div>
 
-            {/* Trust badges */}
-            <div className="hero-trust-badges" aria-label="Why TrustedMM is trustworthy">
-              {TRUST_BADGES.map((badge) => {
-                const Icon = badge.icon;
+            <div className="hero-trust-row" aria-label="Platform trust indicators">
+              {TRUST_INDICATORS.map((item) => {
+                const Icon = item.icon;
                 return (
-                  <div key={badge.label} className="hero-trust-badge">
-                    <span className="hero-trust-badge-icon" aria-hidden>
+                  <div key={item.label} className="hero-trust-item">
+                    <span className="hero-trust-item-icon" aria-hidden>
                       <Icon className="h-4 w-4" strokeWidth={2} />
                     </span>
-                    <span className="hero-trust-badge-label">{badge.label}</span>
+                    <span className="hero-trust-item-label">{item.label}</span>
                   </div>
                 );
               })}
             </div>
+
+            <div className="hero-social-proof" aria-label="Platform credibility">
+              <p className="hero-social-proof-title">Trusted by traders worldwide</p>
+              <div className="hero-social-proof-grid">
+                {SOCIAL_PROOF.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div key={item.label} className="hero-social-proof-item">
+                      <Icon className="hero-social-proof-icon h-3.5 w-3.5 shrink-0" strokeWidth={2} aria-hidden />
+                      <span>{item.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
-          <div className="hero-dashboard-wrap">
-            <DashboardPreview />
+          <div className="hero-card-wrap">
+            <TrustProtectionCard />
           </div>
         </div>
       </div>
