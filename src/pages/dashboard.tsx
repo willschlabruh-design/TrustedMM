@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { FileText, BookOpen, MessageCircle, Bell, Settings } from 'lucide-react';
+import { FileText, BookOpen, MessageCircle, Bell, Settings, Inbox, CheckCircle2, BarChart3, CircleCheck, Clock, ShieldCheck, Timer } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import PageShell from '../components/layout/PageShell';
 import {
   Button,
@@ -36,14 +37,14 @@ const QUICK_ACTIONS = [
     href: '/create-trade',
     title: 'Request Trade',
     description:
-      'Submit a trade request. TrustedMM reviews it and assigns a verified middleman automatically.',
+      'Submit a trade request. TrustedMM reviews it and assigns a verified escrow agent automatically.',
     icon: FileText,
     accent: 'from-accent/20 to-accent/5',
   },
   {
     href: '/how-it-works',
     title: 'How It Works',
-    description: 'Learn how TrustedMM assigns middlemen and protects trades.',
+    description: 'Learn how TrustedMM assigns escrow agents and protects trades.',
     icon: BookOpen,
     accent: 'from-emerald-500/20 to-teal-500/10',
   },
@@ -139,7 +140,14 @@ export default function Dashboard() {
               </h1>
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <Badge variant={user?.verified ? 'success' : 'warning'}>
-                  {user?.verified ? '✓ Verified' : 'Verification Pending'}
+                  {user?.verified ? (
+                    <span className="inline-flex items-center gap-1">
+                      <CheckCircle2 className="h-3 w-3" strokeWidth={2.5} aria-hidden />
+                      Verified
+                    </span>
+                  ) : (
+                    'Verification Pending'
+                  )}
                 </Badge>
                 <Badge variant={user?.role === 'ADMIN' ? 'purple' : 'default'}>
                   {user ? roleLabel(user.role) : 'Guest'}
@@ -164,9 +172,9 @@ export default function Dashboard() {
           </>
         ) : (
           <>
-            <StatCard label="Active Trades" value={stats?.activeTrades ?? 0} icon="📊" />
-            <StatCard label="Completed Trades" value={stats?.completedTrades ?? 0} icon="✅" />
-            <StatCard label="Pending Trades" value={stats?.pendingTrades ?? 0} icon="⏳" />
+            <StatCard label="Active Trades" value={stats?.activeTrades ?? 0} icon={BarChart3} />
+            <StatCard label="Completed Trades" value={stats?.completedTrades ?? 0} icon={CircleCheck} />
+            <StatCard label="Pending Trades" value={stats?.pendingTrades ?? 0} icon={Clock} />
             <VerificationStatCard verified={user?.verified ?? false} />
           </>
         )}
@@ -195,7 +203,7 @@ export default function Dashboard() {
             <ActivityTimeline events={activityEvents} />
           ) : (
             <EmptyState
-              icon="📭"
+              icon={<Inbox className="h-6 w-6" strokeWidth={2} aria-hidden />}
               title="No recent activity"
               description="When you start trades, send messages, or receive reviews, they'll show up here."
               actionLabel="Request Trade"
@@ -222,7 +230,7 @@ export default function Dashboard() {
                     <Icon className="h-5 w-5" strokeWidth={2} aria-hidden />
                   </div>
                   <div className="min-w-0">
-                    <p className="font-semibold text-white group-hover:text-accent transition-colors duration-200">
+                    <p className="font-semibold text-white group-hover:text-slate-200 transition-colors duration-200">
                       {action.title}
                     </p>
                     <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">{action.description}</p>
@@ -268,7 +276,7 @@ export default function Dashboard() {
   );
 }
 
-function StatCard({ label, value, icon }: { label: string; value: number; icon: string }) {
+function StatCard({ label, value, icon: Icon }: { label: string; value: number; icon: LucideIcon }) {
   return (
     <Card hover className="app-stat-card">
       <div className="flex items-start justify-between">
@@ -278,9 +286,7 @@ function StatCard({ label, value, icon }: { label: string; value: number; icon: 
             {value.toLocaleString()}
           </p>
         </div>
-        <span className="text-xl opacity-80" aria-hidden>
-          {icon}
-        </span>
+        <Icon className="h-5 w-5 text-slate-400 opacity-80" strokeWidth={2} aria-hidden />
       </div>
     </Card>
   );
@@ -299,9 +305,11 @@ function VerificationStatCard({ verified }: { verified: boolean }) {
             {verified ? 'Identity confirmed' : 'Action required'}
           </Badge>
         </div>
-        <span className="text-xl opacity-80" aria-hidden>
-          {verified ? '🛡️' : '⏱️'}
-        </span>
+        {verified ? (
+          <ShieldCheck className="h-5 w-5 text-emerald-400 opacity-80" strokeWidth={2} aria-hidden />
+        ) : (
+          <Timer className="h-5 w-5 text-slate-400 opacity-80" strokeWidth={2} aria-hidden />
+        )}
       </div>
     </Card>
   );

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { Check } from 'lucide-react';
 import PageShell from '../components/layout/PageShell';
 import {
   Button,
@@ -65,7 +66,7 @@ export default function CreateTrade() {
   return (
     <PageShell
       title="Request a Trade"
-      description="Submit a trade request. TrustedMM will review it and assign a verified middleman to protect both parties."
+      description="Submit a trade request. TrustedMM will review it and assign a verified escrow agent to protect both parties."
       maxWidth="lg"
     >
       {/* Step indicator */}
@@ -86,7 +87,7 @@ export default function CreateTrade() {
                           : 'bg-white/5 border-white/10 text-slate-500'
                     }`}
                   >
-                    {done ? '✓' : s.id}
+                    {done ? <Check className="h-4 w-4" strokeWidth={2.5} aria-hidden /> : s.id}
                   </div>
                   <span
                     className={`text-sm font-medium truncate hidden sm:inline ${
@@ -239,7 +240,7 @@ export default function CreateTrade() {
                 <StatusBadge status="WAITING_FOR_MIDDLEMEN" />
               </div>
               <CardDescription>
-              After submission, TrustedMM assigns a verified middleman and notifies all parties.
+              After submission, TrustedMM assigns a verified escrow agent and notifies all parties.
             </CardDescription>
             </CardHeader>
             <TradeProgress status="WAITING_FOR_MIDDLEMEN" />

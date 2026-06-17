@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { CheckCircle2 } from 'lucide-react';
 import PageShell from '../../../components/layout/PageShell';
 import { Button, Card, CardHeader, CardTitle, CardDescription, Alert } from '../../../components/ui';
 
@@ -41,7 +42,7 @@ export default function TradeReview() {
     >
       {status === 'success' ? (
         <Card padding="lg" className="text-center animate-fade-in">
-          <div className="text-4xl mb-4">✓</div>
+          <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-emerald-400" strokeWidth={2} aria-hidden />
           <h2 className="text-xl font-semibold text-white">Review submitted</h2>
           <p className="mt-2 text-sm text-slate-400">Thank you for your feedback. Redirecting…</p>
         </Card>
@@ -50,7 +51,7 @@ export default function TradeReview() {
           <CardHeader>
             <CardTitle>Rate this trade</CardTitle>
             <CardDescription>
-              Your review helps other users choose trusted middlemen and trade safely.
+              Your review helps other users trade safely on TrustedMM.
             </CardDescription>
           </CardHeader>
 
@@ -63,9 +64,9 @@ export default function TradeReview() {
                     key={n}
                     type="button"
                     onClick={() => setRating(n)}
-                    className={`min-w-[3rem] px-3 py-2 rounded-xl text-sm font-semibold transition-all ${
+                    className={`min-w-[3rem] px-3 py-2 rounded-xl text-sm font-semibold transition-colors duration-200 ${
                       rating === n
-                        ? 'bg-accent text-navy-950 scale-105'
+                        ? 'bg-accent text-accent-foreground'
                         : 'bg-white/5 text-white border border-white/10 hover:bg-white/10'
                     }`}
                     aria-label={`${n} stars`}

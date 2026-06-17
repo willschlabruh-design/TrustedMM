@@ -149,14 +149,14 @@ export default function Header() {
             <button
               aria-label={open ? 'Close menu' : 'Open menu'}
               onClick={() => setOpen((o) => !o)}
-              className="md:hidden text-white p-2 rounded-md hover:bg-white/10 transition-colors duration-200"
+              className="lg:hidden text-white p-2 rounded-md hover:bg-white/10 transition-colors duration-200"
             >
               {open ? <X className="h-6 w-6" strokeWidth={2} /> : <Menu className="h-6 w-6" strokeWidth={2} />}
             </button>
             <a href="/" className="shrink-0" aria-label="TrustedMM home">
               <BrandLogo width={44} height={44} priority />
             </a>
-            <nav className="hidden md:flex gap-1 items-center ml-2">
+            <nav className="hidden lg:flex gap-1 items-center ml-2">
               {navItems.map((item) => {
                 const active = item.href === '/' ? path === '/' : path.startsWith(item.href);
                 return (
@@ -190,7 +190,7 @@ export default function Header() {
                 </a>
                 <a
                   href="/register"
-                  className="hidden md:inline bg-white/6 px-3 py-2 rounded-md text-white hover:bg-white/10 transition-colors duration-200 text-sm"
+                  className="hidden lg:inline bg-white/6 px-3 py-2 rounded-md text-white hover:bg-white/10 transition-colors duration-200 text-sm"
                 >
                   Sign up
                 </a>
@@ -258,7 +258,7 @@ export default function Header() {
         </div>
       </header>
 
-      <div className={cn('fixed inset-0 z-40 md:hidden', open ? 'pointer-events-auto' : 'pointer-events-none')}>
+      <div className={cn('fixed inset-0 z-40 lg:hidden', open ? 'pointer-events-auto' : 'pointer-events-none')}>
         <div
           className={cn(
             'fixed inset-0 bg-black transition-opacity duration-200',

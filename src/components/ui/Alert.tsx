@@ -5,7 +5,7 @@ type AlertVariant = 'info' | 'success' | 'warning' | 'error';
 const styles: Record<AlertVariant, string> = {
   info: 'bg-blue-500/10 border-blue-500/25 text-blue-100',
   success: 'bg-emerald-500/10 border-emerald-500/25 text-emerald-100',
-  warning: 'bg-amber-500/10 border-amber-500/25 text-amber-100',
+  warning: 'bg-amber-500/10 border-amber-500/30 text-amber-50',
   error: 'bg-red-500/10 border-red-500/25 text-red-100',
 };
 

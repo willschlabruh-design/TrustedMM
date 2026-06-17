@@ -1,86 +1,13 @@
 import { useEffect, useState } from 'react';
+import { BadgeCheck, Lock, ShieldCheck, UserRound } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
-const PROTECTION_ITEMS = [
-  {
-    label: 'Identity Verification',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" aria-hidden>
-        <path
-          d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-        <path
-          d="M6 20v-1a6 6 0 0 1 12 0v1"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
-  },
-  {
-    label: 'Secure Escrow',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" aria-hidden>
-        <rect
-          x="4"
-          y="10"
-          width="16"
-          height="10"
-          rx="2"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-        <path
-          d="M8 10V7a4 4 0 0 1 8 0v3"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
-  },
-  {
-    label: 'Dispute Protection',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" aria-hidden>
-        <path
-          d="M12 3 4 6v6c0 5 3.4 8.7 8 9 4.6-.3 8-4 8-9V6l-8-3Z"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinejoin="round"
-        />
-        <path
-          d="m9.5 12 1.8 1.8L15 10"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
-  },
-  {
-    label: 'Verified Middlemen',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" aria-hidden>
-        <path
-          d="M4 19V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-        <path
-          d="M8 7h8M8 11h8M8 15h5"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
-  },
-] as const;
+const PROTECTION_ITEMS: Array<{ label: string; icon: LucideIcon }> = [
+  { label: 'Identity Verification', icon: UserRound },
+  { label: 'Secure Escrow', icon: Lock },
+  { label: 'Dispute Protection', icon: ShieldCheck },
+  { label: 'Verified Escrow Agents', icon: BadgeCheck },
+];
 
 const TIMELINE_STEPS = [
   'Trade Opened',
@@ -140,15 +67,19 @@ export default function DashboardPreview() {
         </header>
 
         <div className="grid grid-cols-2 gap-2.5 mb-6">
-          {PROTECTION_ITEMS.map((item, index) => (
+          {PROTECTION_ITEMS.map((item, index) => {
+            const Icon = item.icon;
+            return (
             <div
               key={item.label}
               className="trust-protection-item group"
               style={{ animationDelay: `${120 + index * 80}ms` }}
             >
-              <div className="trust-protection-icon">{item.icon}</div>
+              <div className="trust-protection-icon">
+                <Icon className="h-5 w-5" strokeWidth={2} aria-hidden />
+              </div>
               <div className="min-w-0 flex-1">
-                <div className="text-xs sm:text-sm font-medium text-white/90 truncate">
+                <div className="text-xs sm:text-sm font-medium text-slate-200 leading-snug">
                   {item.label}
                 </div>
               </div>
@@ -156,12 +87,13 @@ export default function DashboardPreview() {
                 <CheckIcon />
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="trust-timeline mb-6">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-white/50">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Protection Timeline
             </span>
             <span className="text-xs text-emerald-300/90 font-medium">All stages complete</span>
@@ -188,7 +120,7 @@ export default function DashboardPreview() {
         <div className="trust-score-widget">
           <div className="flex items-end justify-between gap-4 mb-4">
             <div>
-              <div className="text-xs text-white/50 mb-1">Security Score</div>
+              <div className="text-xs text-slate-400 mb-1">Security Score</div>
               <div className="flex items-baseline gap-1.5">
                 <span className="text-3xl font-bold bg-gradient-to-br from-blue-300 via-indigo-200 to-purple-300 bg-clip-text text-transparent">
                   100%
@@ -231,10 +163,10 @@ export default function DashboardPreview() {
           <div className="grid grid-cols-3 gap-2">
             {SCORE_BADGES.map((badge) => (
               <div key={badge.label} className="trust-score-badge">
-                <div className="text-[10px] uppercase tracking-wide text-white/45 mb-0.5">
+                <div className="text-[10px] uppercase tracking-wide text-slate-400 mb-0.5">
                   {badge.label}
                 </div>
-                <div className="text-xs font-semibold text-white/90">{badge.value}</div>
+                <div className="text-xs font-semibold text-slate-200">{badge.value}</div>
               </div>
             ))}
           </div>

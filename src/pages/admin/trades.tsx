@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Package } from 'lucide-react';
 import AdminShell from '../../components/layout/AdminShell';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
@@ -58,7 +59,7 @@ export default function AdminTrades() {
 
       {!loading && trades.length === 0 && (
         <EmptyState
-          icon="📦"
+          icon={<Package className="h-6 w-6" strokeWidth={2} aria-hidden />}
           title="No trades yet"
           description="Trades created on the platform will appear here."
         />

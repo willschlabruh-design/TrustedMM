@@ -10,8 +10,8 @@ const steps = [
   },
   {
     step: 2,
-    title: 'Middleman Assigned',
-    description: 'TrustedMM reviews your request and assigns a verified middleman.',
+    title: 'Escrow Agent Assigned',
+    description: 'TrustedMM reviews your request and assigns a verified escrow agent automatically.',
   },
   {
     step: 3,
@@ -21,7 +21,7 @@ const steps = [
   {
     step: 4,
     title: 'Completion',
-    description: 'Upon confirmation, the assigned middleman completes the trade securely.',
+    description: 'Upon confirmation, the assigned agent completes the trade securely.',
   },
 ];
 
@@ -29,7 +29,7 @@ export default function HowItWorks() {
   return (
     <PageShell
       title="How It Works"
-      description="TrustedMM manages every trade: submit a request, receive a verified middleman assignment, verify assets, and complete securely."
+      description="TrustedMM manages every trade: submit a request, receive automatic escrow assignment, verify assets, and complete securely."
       maxWidth="xl"
     >
       <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-5">

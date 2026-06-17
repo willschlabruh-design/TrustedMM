@@ -7,7 +7,7 @@ import BrandLogo from './BrandLogo';
 const TRUST_INDICATORS = [
   'Protected by Escrow',
   'Identity Verification Required',
-  'Verified Middlemen',
+  'Verified Escrow Agents',
   'Professional Dispute Resolution',
 ] as const;
 
@@ -41,7 +41,7 @@ export default function Hero() {
               Trade Safely. Every Time.
             </h1>
             <p className="mt-5 text-slate-200 text-base sm:text-lg leading-relaxed max-w-xl">
-              TrustedMM acts as a secure middleman for digital asset transactions, protecting both
+              TrustedMM provides secure escrow for digital asset transactions, protecting both
               buyers and sellers until the deal is complete.
             </p>
 

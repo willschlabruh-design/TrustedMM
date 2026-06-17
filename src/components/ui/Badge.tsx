@@ -5,7 +5,7 @@ type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'pur
 const variants: Record<BadgeVariant, string> = {
   default: 'bg-white/8 text-slate-200 border-white/10',
   success: 'bg-emerald-500/15 text-emerald-200 border-emerald-500/25',
-  warning: 'bg-amber-500/15 text-amber-200 border-amber-500/25',
+  warning: 'bg-amber-950/50 text-amber-50 border-amber-400/40',
   danger: 'bg-red-500/15 text-red-200 border-red-500/25',
   info: 'bg-blue-500/15 text-blue-200 border-blue-500/25',
   purple: 'bg-purple-500/15 text-purple-200 border-purple-500/25',

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ScrollText } from 'lucide-react';
 import AdminShell from '../../components/layout/AdminShell';
 import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
@@ -145,7 +146,7 @@ export default function AdminAuditLogs() {
 
       {logs.length === 0 ? (
         <EmptyState
-          icon="📜"
+          icon={<ScrollText className="h-6 w-6" strokeWidth={2} aria-hidden />}
           title="No events recorded"
           description="No authentication events match your filter yet."
         />

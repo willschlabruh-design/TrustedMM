@@ -3,9 +3,9 @@ import Card from '../components/ui/Card';
 
 const faqs = [
   {
-    question: 'How does TrustedMM assign a middleman?',
+    question: 'How does TrustedMM assign an escrow agent?',
     answer:
-      'You submit a trade request. TrustedMM reviews it and assigns a verified platform middleman — you do not browse or choose middlemen yourself.',
+      'You submit a trade request. TrustedMM reviews it and assigns a verified platform escrow agent — you do not browse or choose agents yourself.',
   },
   {
     question: 'How long does a trade take?',

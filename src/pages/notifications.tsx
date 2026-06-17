@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Bell, User } from 'lucide-react';
 import PageShell from '../components/layout/PageShell';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
@@ -36,7 +37,7 @@ function typeLabel(type: string): string {
     contact_message: 'Contact',
     message: 'Message',
     trade_created: 'Trade',
-    middleman_needed: 'Middleman',
+    middleman_needed: 'Assignment',
     trade_completed: 'Completed',
   };
   return labels[type] || type.replace(/_/g, ' ');
@@ -111,7 +112,7 @@ export default function Notifications() {
     >
       {notifications.length === 0 && (
         <EmptyState
-          icon="🔔"
+          icon={<Bell className="h-6 w-6" strokeWidth={2} aria-hidden />}
           title="You're all caught up"
           description="No new notifications right now. When something needs your attention — a trade update, message, or assignment — it will appear here."
           actionLabel="View dashboard"
@@ -403,8 +404,8 @@ function MiddlemanNotification({
           </div>
           <p className="text-sm text-slate-400">
             {payload.tradeId
-              ? `Trade #${payload.tradeId} is ready for TrustedMM middleman assignment.`
-              : 'A trade request is awaiting middleman assignment.'}
+              ? `Trade #${payload.tradeId} is ready for TrustedMM escrow agent assignment.`
+              : 'A trade request is awaiting escrow agent assignment.'}
           </p>
           <p className="text-xs text-slate-500 mt-3">Received: {when}</p>
           {trade && trade.middlemanId && (

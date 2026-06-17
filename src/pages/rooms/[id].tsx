@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { MessageCircle } from 'lucide-react';
 import PageShell from '../../components/layout/PageShell';
 import {
   Button,
@@ -184,7 +185,7 @@ function MessageList({
   if (messages.length === 0) {
     return (
       <EmptyState
-        icon="💬"
+        icon={<MessageCircle className="h-6 w-6" strokeWidth={2} aria-hidden />}
         title="No messages yet"
         description="Start the conversation. Messages and image attachments will appear here."
       />

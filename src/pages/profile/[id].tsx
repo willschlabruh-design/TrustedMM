@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { User } from 'lucide-react';
 import PageShell from '../../components/layout/PageShell';
 import {
   Button,
@@ -75,7 +76,7 @@ export default function ProfilePage() {
     return (
       <PageShell maxWidth="lg">
         <EmptyState
-          icon="👤"
+          icon={<User className="h-6 w-6" strokeWidth={2} aria-hidden />}
           title="Profile not available"
           description="This profile is private or does not exist."
           actionLabel="Request a Trade"

@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react';
 import { cn } from '../../lib/cn';
 
 const STEPS = [
@@ -36,10 +37,10 @@ export default function TradeProgress({ status }: { status: string }) {
                   done
                     ? 'bg-emerald-500/20 border-emerald-400/40 text-emerald-200'
                     : 'bg-white/5 border-white/10 text-slate-500',
-                  active && 'ring-2 ring-accent/40 scale-110'
+                  active && 'ring-2 ring-accent/40'
                 )}
               >
-                {done ? '✓' : index + 1}
+                {done ? <Check className="h-4 w-4" strokeWidth={2.5} aria-hidden /> : index + 1}
               </div>
               <span
                 className={cn(

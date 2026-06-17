@@ -23,7 +23,7 @@ body{ background:var(--bg); color:#fff; }
 .bg-deep{ background: linear-gradient(180deg,#081229,#07112a); }
 
 /* glass card */
-.card-glass{ background:rgba(255,255,255,0.04); border-radius:12px; padding:16px; backdrop-filter: blur(6px); border:1px solid rgba(255,255,255,0.04); }
+.card-glass{ background:rgba(255,255,255,0.06); border-radius:12px; padding:16px; backdrop-filter: blur(6px); border:1px solid rgba(255,255,255,0.08); }
 
 /* Dark form styles (ensure this is available to Next pages) */
 .form-dark {
@@ -77,8 +77,8 @@ body{ background:var(--bg); color:#fff; }
 .status-pill{ padding:8px 12px; border-radius:999px; background:linear-gradient(90deg,#7c6cff,#8b5cf6); color:#fff; font-weight:700; font-size:0.9rem; }
 .progress { height:12px; background: rgba(255,255,255,0.02); border-radius:999px; overflow:hidden; border:1px solid rgba(255,255,255,0.02); }
 .progress > i { display:block; height:100%; background: linear-gradient(90deg,#7c6cff,#8b5cf6); border-radius:999px; box-shadow:0 8px 22px rgba(124,108,255,0.14); transition: width 700ms cubic-bezier(.2,.9,.2,1); }
-.dashboard-card{ transition: transform 180ms ease, box-shadow 180ms ease; }
-.dashboard-card:hover{ transform: translateY(-6px); box-shadow:0 18px 40px rgba(2,6,23,0.6); }
+.dashboard-card{ transition: box-shadow 200ms ease, border-color 200ms ease; }
+.dashboard-card:hover{ box-shadow:0 18px 40px rgba(2,6,23,0.6); border-color: rgba(255,255,255,0.1); }
 
 /* Trust & Protection hero dashboard */
 .trust-dashboard {
@@ -93,11 +93,10 @@ body{ background:var(--bg); color:#fff; }
     0 24px 48px rgba(2,6,23,0.45),
     0 8px 32px rgba(79,70,229,0.12),
     inset 0 1px 0 rgba(255,255,255,0.08);
-  transition: transform 280ms cubic-bezier(0.2, 0.9, 0.2, 1), box-shadow 280ms ease;
+  transition: box-shadow 280ms ease;
   overflow: hidden;
 }
 .trust-dashboard:hover {
-  transform: translateY(-4px);
   box-shadow:
     0 0 0 1px rgba(129,140,248,0.15),
     0 32px 64px rgba(2,6,23,0.5),
@@ -120,9 +119,9 @@ body{ background:var(--bg); color:#fff; }
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(167,243,208,0.95);
-  background: rgba(16,185,129,0.12);
-  border: 1px solid rgba(52,211,153,0.25);
+  color: #a7f3d0;
+  background: rgba(6,78,59,0.55);
+  border: 1px solid rgba(52,211,153,0.45);
 }
 .trust-dashboard-pulse {
   width: 7px;
@@ -144,13 +143,12 @@ body{ background:var(--bg); color:#fff; }
   border-radius: 14px;
   background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
   border: 1px solid rgba(255,255,255,0.06);
-  transition: background 220ms ease, border-color 220ms ease, transform 220ms ease, box-shadow 220ms ease;
+  transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
   animation: trustFadeUp 500ms ease both;
 }
 .trust-protection-item:hover {
   background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.08));
   border-color: rgba(129,140,248,0.25);
-  transform: translateY(-1px);
   box-shadow: 0 8px 24px rgba(79,70,229,0.12);
 }
 .trust-protection-icon {
@@ -168,7 +166,6 @@ body{ background:var(--bg); color:#fff; }
 }
 .trust-protection-item:hover .trust-protection-icon {
   color: #c4b5fd;
-  transform: scale(1.05);
 }
 .trust-check-badge {
   display: flex;
@@ -220,7 +217,7 @@ body{ background:var(--bg); color:#fff; }
   font-size: 9px;
   line-height: 1.2;
   text-align: center;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.72);
   max-width: 64px;
 }
 .trust-score-widget {
@@ -242,8 +239,8 @@ body{ background:var(--bg); color:#fff; }
 .trust-score-badge {
   padding: 8px 10px;
   border-radius: 12px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.05);
+  background: rgba(15,23,42,0.45);
+  border: 1px solid rgba(255,255,255,0.1);
   transition: background 200ms ease, border-color 200ms ease;
 }
 .trust-score-badge:hover {

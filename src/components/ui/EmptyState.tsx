@@ -1,3 +1,4 @@
+import { Inbox } from 'lucide-react';
 import Button from './Button';
 import Card from './Card';
 
@@ -20,8 +21,8 @@ export default function EmptyState({
 }: EmptyStateProps) {
   return (
     <Card className="text-center py-12 px-6">
-      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-purple-500/20 border border-white/10 text-2xl">
-        {icon ?? '📋'}
+      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-purple-500/20 border border-white/10 text-primary">
+        {icon ?? <Inbox className="h-6 w-6" strokeWidth={2} aria-hidden />}
       </div>
       <h3 className="text-lg font-semibold text-white">{title}</h3>
       <p className="mt-2 text-sm text-slate-400 max-w-md mx-auto">{description}</p>

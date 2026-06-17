@@ -11,7 +11,7 @@ export type TimelineEvent = {
 const dotColors = {
   default: 'bg-slate-400',
   success: 'bg-emerald-400',
-  warning: 'bg-amber-400',
+  warning: 'bg-accent',
   info: 'bg-blue-400',
 };
 

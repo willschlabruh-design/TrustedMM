@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Star } from 'lucide-react';
 import PageShell from '../components/layout/PageShell';
 import Card, { CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
@@ -36,7 +37,7 @@ function StarRating({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-1" aria-label={`${rating} out of 5 stars`}>
       {Array.from({ length: 5 }).map((_, i) => (
-        <span key={i} className={i < rating ? 'text-amber-400' : 'text-slate-600'}>
+        <span key={i} className={i < rating ? 'text-accent' : 'text-slate-600'}>
           ★
         </span>
       ))}
@@ -89,7 +90,7 @@ export default function Reviews() {
 
       {!loading && reviews.length === 0 && (
         <EmptyState
-          icon="⭐"
+          icon={<Star className="h-6 w-6" strokeWidth={2} aria-hidden />}
           title="No reviews yet"
           description="Reviews appear here after trades are completed. Complete a trade to leave or receive feedback."
           actionLabel="Go to dashboard"
