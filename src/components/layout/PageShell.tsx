@@ -1,5 +1,4 @@
-import Header from '../Header';
-import Footer from '../Footer';
+import AppShell from './AppShell';
 import { cn } from '../../lib/cn';
 
 type PageShellProps = {
@@ -28,11 +27,10 @@ export default function PageShell({
   showFooter = true,
 }: PageShellProps) {
   return (
-    <div className="min-h-screen bg-app-gradient text-white">
-      <Header />
+    <AppShell showFooter={showFooter}>
       <main
         className={cn(
-          'app-page-main container mx-auto px-4 sm:px-6',
+          'app-page-main flex-1 container mx-auto px-4 sm:px-6 w-full',
           maxWidthMap[maxWidth],
           className
         )}
@@ -49,7 +47,6 @@ export default function PageShell({
         )}
         {children}
       </main>
-      {showFooter && <Footer />}
-    </div>
+    </AppShell>
   );
 }

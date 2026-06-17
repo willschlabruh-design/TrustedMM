@@ -136,7 +136,7 @@ function MessageBubble({ message, user }: { message: Message; user: User | null 
           className={cn(
             'rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed break-words',
             own
-              ? 'bg-accent/15 border border-accent/25 text-white rounded-tr-sm'
+              ? 'bg-accent/15 border border-accent/25 text-accent-foreground rounded-tr-sm'
               : 'bg-white/6 border border-white/8 text-slate-100 rounded-tl-sm'
           )}
         >

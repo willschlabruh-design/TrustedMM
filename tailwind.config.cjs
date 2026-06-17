@@ -8,7 +8,11 @@ module.exports = {
     extend: {
       colors: {
         primary: '#3b82f6',
-        accent: '#facc15',
+        accent: {
+          DEFAULT: '#E5B423',
+          hover: '#F0C94A',
+          foreground: '#0B1228',
+        },
         deep: '#081229',
         navy: {
           950: '#050b1a',
@@ -16,16 +20,15 @@ module.exports = {
           800: '#0c1835',
           700: '#101f45',
         },
-        gold: {
-          DEFAULT: '#facc15',
-          500: '#eab308',
-        },
       },
       boxShadow: {
         card: '0 0 0 1px rgba(255,255,255,0.06), 0 8px 32px rgba(2,6,23,0.35)',
         'card-hover':
           '0 0 0 1px rgba(129,140,248,0.15), 0 16px 48px rgba(2,6,23,0.45)',
         glow: '0 0 40px rgba(59,130,246,0.12)',
+      },
+      transitionDuration: {
+        DEFAULT: '200ms',
       },
       animation: {
         'fade-in': 'fadeIn 0.4s ease both',

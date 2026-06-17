@@ -1,4 +1,4 @@
-import Header from '../Header';
+import AppShell from './AppShell';
 import Card from '../ui/Card';
 import { cn } from '../../lib/cn';
 
@@ -12,9 +12,8 @@ type AuthShellProps = {
 
 export default function AuthShell({ children, title, subtitle, footer, wide }: AuthShellProps) {
   return (
-    <div className="min-h-screen bg-app-gradient text-white">
-      <Header />
-      <div className="app-page-main container mx-auto px-4 sm:px-6 flex items-center justify-center py-8">
+    <AppShell>
+      <div className="app-page-main flex flex-1 items-center justify-center container mx-auto px-4 sm:px-6 py-8 w-full">
         <div className={cn('w-full animate-slide-up', wide ? 'max-w-lg' : 'max-w-md')}>
           <Card padding="lg" className="relative overflow-hidden">
             <div
@@ -38,6 +37,6 @@ export default function AuthShell({ children, title, subtitle, footer, wide }: A
           </p>
         </div>
       </div>
-    </div>
+    </AppShell>
   );
 }

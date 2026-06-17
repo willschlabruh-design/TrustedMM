@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { FileText, BookOpen, MessageCircle, Bell, Settings } from 'lucide-react';
 import PageShell from '../components/layout/PageShell';
 import {
   Button,
@@ -36,35 +37,35 @@ const QUICK_ACTIONS = [
     title: 'Request Trade',
     description:
       'Submit a trade request. TrustedMM reviews it and assigns a verified middleman automatically.',
-    icon: '📝',
-    accent: 'from-amber-500/20 to-orange-500/10',
+    icon: FileText,
+    accent: 'from-accent/20 to-accent/5',
   },
   {
     href: '/how-it-works',
     title: 'How It Works',
     description: 'Learn how TrustedMM assigns middlemen and protects trades.',
-    icon: '📋',
+    icon: BookOpen,
     accent: 'from-emerald-500/20 to-teal-500/10',
   },
   {
     href: '/messages',
     title: 'Messages',
     description: 'View trade rooms and conversations.',
-    icon: '💬',
+    icon: MessageCircle,
     accent: 'from-blue-500/20 to-indigo-500/10',
   },
   {
     href: '/notifications',
     title: 'Notifications',
     description: 'Stay on top of trade updates and alerts.',
-    icon: '🔔',
+    icon: Bell,
     accent: 'from-purple-500/20 to-violet-500/10',
   },
   {
     href: '/settings',
     title: 'Settings',
     description: 'Manage account, security, and preferences.',
-    icon: '⚙️',
+    icon: Settings,
     accent: 'from-slate-500/20 to-slate-400/10',
   },
 ];
@@ -210,23 +211,25 @@ export default function Dashboard() {
             <CardDescription>Jump to common tasks.</CardDescription>
           </CardHeader>
           <div className="grid gap-3">
-            {QUICK_ACTIONS.map((action) => (
+            {QUICK_ACTIONS.map((action) => {
+              const Icon = action.icon;
+              return (
               <Link key={action.href} href={action.href} className="block group">
                 <Card hover padding="sm" className="flex items-start gap-3">
                   <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${action.accent} border border-white/10 text-lg`}
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${action.accent} border border-white/10 text-accent`}
                   >
-                    {action.icon}
+                    <Icon className="h-5 w-5" strokeWidth={2} aria-hidden />
                   </div>
                   <div className="min-w-0">
-                    <p className="font-semibold text-white group-hover:text-accent transition-colors">
+                    <p className="font-semibold text-white group-hover:text-accent transition-colors duration-200">
                       {action.title}
                     </p>
                     <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">{action.description}</p>
                   </div>
                 </Card>
               </Link>
-            ))}
+            );})}
           </div>
 
           <div className="pt-2">

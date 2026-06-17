@@ -1,22 +1,27 @@
-export default function Footer(){
+import BrandLogo from './BrandLogo';
+import { cn } from '../lib/cn';
+
+export default function Footer({ className = '' }: { className?: string }) {
   return (
-    <footer className="site-footer bg-transparent">
+    <footer className={cn('site-footer bg-transparent', className)}>
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <div>
-            <img src="/api/assets/logo" alt="Trusted" className="w-12 h-12 inline-block mr-3" />
-            <span className="font-semibold">Trusted</span>
-            <div className="text-sm mt-1">Secure escrow for digital asset trades.</div>
+          <div className="flex items-center gap-3">
+            <BrandLogo width={48} height={48} priority className="inline-block" />
+            <div>
+              <span className="font-semibold">TrustedMM</span>
+              <div className="text-sm mt-1 text-slate-400">Secure escrow for digital asset trades.</div>
+            </div>
           </div>
 
-          <div className="flex gap-6 text-sm">
-            <a href="/privacy-policy">Privacy</a>
-            <a href="/terms">Terms</a>
-            <a href="/legal">Legal</a>
-            <a href="/contact">Contact</a>
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-sm">
+            <a href="/privacy-policy" className="text-slate-300 hover:text-white transition-colors duration-200">Privacy</a>
+            <a href="/terms" className="text-slate-300 hover:text-white transition-colors duration-200">Terms</a>
+            <a href="/legal" className="text-slate-300 hover:text-white transition-colors duration-200">Legal</a>
+            <a href="/contact" className="text-slate-300 hover:text-white transition-colors duration-200">Contact</a>
           </div>
 
-          <div className="text-sm">© {new Date().getFullYear()} Trusted — All rights reserved</div>
+          <div className="text-sm text-slate-500">© {new Date().getFullYear()} TrustedMM — All rights reserved</div>
         </div>
       </div>
     </footer>

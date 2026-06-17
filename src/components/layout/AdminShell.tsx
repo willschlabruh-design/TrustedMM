@@ -1,39 +1,33 @@
-import PageShell from './PageShell';
+import Header from '../Header';
+import Footer from '../Footer';
 import { cn } from '../../lib/cn';
 
-const navItems = [
-  { href: '/admin', label: 'Overview' },
-  { href: '/admin/panel', label: 'Users' },
-  { href: '/admin/trades', label: 'Trades' },
-  { href: '/admin/audit-logs', label: 'Audit Logs' },
-];
-
-export default function AdminShell({
-  children,
-  title,
-  description,
-}: {
+type AdminShellProps = {
   children: React.ReactNode;
-  title: string;
+  title?: string;
   description?: string;
-}) {
+  className?: string;
+};
+
+export default function AdminShell({ children, title, description, className }: AdminShellProps) {
   return (
-    <PageShell title={title} description={description} maxWidth="2xl" showFooter={false}>
-      <nav className="mb-8 flex flex-wrap gap-2" aria-label="Admin navigation">
-        {navItems.map((item) => (
-          <a
-            key={item.href}
-            href={item.href}
-            className={cn(
-              'px-4 py-2 rounded-xl text-sm font-medium border transition-colors',
-              'border-white/10 text-slate-300 hover:bg-white/8 hover:text-white'
-            )}
-          >
-            {item.label}
-          </a>
-        ))}
-      </nav>
-      {children}
-    </PageShell>
+    <div className="flex min-h-screen flex-col bg-app-gradient text-white">
+      <Header />
+      <main
+        className={cn(
+          'app-page-main flex-1 container mx-auto px-4 sm:px-6 max-w-7xl w-full',
+          className
+        )}
+      >
+        {(title || description) && (
+          <header className="mb-8 animate-slide-up">
+            {title && <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">{title}</h1>}
+            {description && <p className="mt-2 text-base text-slate-400 max-w-2xl">{description}</p>}
+          </header>
+        )}
+        {children}
+      </main>
+      <Footer className="mt-auto" />
+    </div>
   );
 }

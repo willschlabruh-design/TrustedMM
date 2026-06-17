@@ -1,4 +1,4 @@
-import Head from 'next/head';
+import SiteHead from '../components/seo/SiteHead';
 import PageShell from '../components/layout/PageShell';
 import Card, { CardDescription, CardTitle } from '../components/ui/Card';
 
@@ -42,10 +42,7 @@ export default function Terms() {
 
   return (
     <>
-      <Head>
-        <title>Terms of Service — Trusted</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-      </Head>
+      <SiteHead title="Terms of Service" description="Terms governing use of TrustedMM secure digital asset escrow." />
       <PageShell title="Terms of Service" maxWidth="lg">
         <p className="-mt-4 mb-8 text-sm text-slate-400">Effective date: {effectiveDate}</p>
 

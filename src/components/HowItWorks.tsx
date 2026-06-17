@@ -11,7 +11,7 @@ export default function HowItWorks(){
       <h2 className="text-3xl font-semibold mb-6">How It Works</h2>
       <div className="timeline">
         {steps.map((s, i) => (
-          <div key={s.title} className="timeline-step card-glass p-4 hover:scale-[1.01] transition">
+          <div key={s.title} className="timeline-step card-glass p-4 hover:border-white/15 transition-colors duration-200">
             <div className="timeline-icon mr-4">
               <div className="text-xl">{i+1}</div>
             </div>

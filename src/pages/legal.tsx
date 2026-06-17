@@ -1,4 +1,4 @@
-import Head from 'next/head';
+import SiteHead from '../components/seo/SiteHead';
 import PageShell from '../components/layout/PageShell';
 import Card, { CardDescription, CardTitle } from '../components/ui/Card';
 
@@ -60,10 +60,7 @@ const sections = [
 export default function Legal() {
   return (
     <>
-      <Head>
-        <title>Full Legal Agreement — Trusted</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-      </Head>
+      <SiteHead title="Full Legal Agreement" description="Complete legal terms governing use of the TrustedMM escrow platform." />
       <PageShell
         title="Full Legal Agreement"
         description="This is the full, legally detailed version of our Terms, policies, and service agreement. It contains comprehensive provisions governing the use of Trusted."

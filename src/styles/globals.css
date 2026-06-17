@@ -5,6 +5,10 @@
 :root{
   --bg: #081229;
   --site-header-height: 4.5rem;
+  --color-accent: #E5B423;
+  --color-accent-hover: #F0C94A;
+  --color-accent-fg: #0B1228;
+  --transition-ui: 200ms ease;
 }
 @media (min-width: 768px) {
   :root {
@@ -40,7 +44,7 @@ body{ background:var(--bg); color:#fff; }
 	color: rgba(255,255,255,0.6) !important;
 }
 .form-dark .error { color: #ffb4b4; }
-.form-dark .btn-primary { background:#ffcf4d; color:#07102a; }
+.form-dark .btn-primary { background: var(--color-accent); color: var(--color-accent-fg); }
 
 /* Animated subtle gradient background */
 .bg-animated-gradient {
@@ -332,7 +336,7 @@ body{ background:var(--bg); color:#fff; }
 .feature-card{ padding:16px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); }
 
 /* Footer */
-.site-footer{ border-top:1px solid rgba(255,255,255,0.03); padding:28px 0; color:rgba(255,255,255,0.7); }
+.site-footer{ border-top:1px solid rgba(255,255,255,0.03); padding:28px 0; color:rgba(255,255,255,0.7); margin-top: auto; }
 
 /* Pricing card */
 .pricing-card{ padding:18px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); max-width:720px; }
@@ -358,10 +362,9 @@ body{ background:var(--bg); color:#fff; }
   box-shadow: 0 0 0 1px rgba(99,102,241,0.04), 0 8px 32px rgba(2,6,23,0.35);
 }
 .app-card-hover {
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .app-card-hover:hover {
-  transform: translateY(-2px);
   border-color: rgba(129,140,248,0.2);
   box-shadow: 0 0 0 1px rgba(129,140,248,0.1), 0 16px 48px rgba(2,6,23,0.45);
 }
