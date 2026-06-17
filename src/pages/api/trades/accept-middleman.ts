@@ -51,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try{
       // Add a message that middleman has joined
-      await prisma.message.create({ data: { roomId: room.id, senderId: ctx.user.id, body: `✅ Middleman ${ctx.user.username || ctx.user.email} has joined the room` } });
+      await prisma.message.create({ data: { roomId: room.id, senderId: ctx.user.id, body: `✅ TrustedMM platform oversight assigned — ${ctx.user.username || ctx.user.email} has joined the room` } });
     }catch(e:any){ console.error('accept-middleman: failed to create join message', e); }
   }
 

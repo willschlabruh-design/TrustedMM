@@ -70,7 +70,7 @@ function buildTimeline(trade: Trade): TimelineEvent[] {
   if (trade.middleman?.username || trade.middlemanId) {
     events.push({
       id: 'middleman',
-      title: 'Middleman assigned',
+      title: 'Platform assignment',
       description: trade.middleman?.username || trade.middlemanId,
       timestamp: formatTimestamp(trade.updatedAt || trade.createdAt),
       type: 'success',
@@ -158,7 +158,7 @@ export default function AdminTradeDetail() {
               <dd className="font-medium text-white">{trade.seller?.username || '—'}</dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-slate-400">Middleman</dt>
+              <dt className="text-slate-400">Platform oversight</dt>
               <dd className="font-medium text-white">
                 {trade.middleman?.username || trade.middlemanId || '—'}
               </dd>

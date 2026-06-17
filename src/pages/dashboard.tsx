@@ -37,14 +37,14 @@ const QUICK_ACTIONS = [
     href: '/create-trade',
     title: 'Request Trade',
     description:
-      'Submit a trade request. TrustedMM reviews it and assigns a verified escrow agent automatically.',
+      'Submit a trade request. TrustedMM reviews it and assigns platform oversight automatically.',
     icon: FileText,
     accent: 'from-accent/20 to-accent/5',
   },
   {
     href: '/how-it-works',
     title: 'How It Works',
-    description: 'Learn how TrustedMM assigns escrow agents and protects trades.',
+    description: 'Learn how TrustedMM manages trades and protects every transaction.',
     icon: BookOpen,
     accent: 'from-emerald-500/20 to-teal-500/10',
   },

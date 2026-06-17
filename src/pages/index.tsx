@@ -11,11 +11,11 @@ export default function Home() {
       <Head>
         <meta
           name="description"
-          content="Secure middleman service for digital asset transactions. TrustedMM protects buyers and sellers with verified escrow."
+          content="Secure escrow platform for digital asset transactions. TrustedMM protects buyers and sellers with verified platform oversight."
         />
         <meta
           property="og:description"
-          content="Secure middleman service for digital asset transactions. TrustedMM protects buyers and sellers with verified escrow."
+          content="Secure escrow platform for digital asset transactions. TrustedMM protects buyers and sellers with verified platform oversight."
         />
       </Head>
       <main className="flex-1 text-white">

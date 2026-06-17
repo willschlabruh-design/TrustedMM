@@ -8,6 +8,7 @@
   --color-accent: #E5B423;
   --color-accent-hover: #F0C94A;
   --color-accent-fg: #0B1228;
+  --color-accent-foreground: #0B1228;
   --transition-ui: 200ms ease;
 }
 @media (min-width: 768px) {
@@ -64,6 +65,10 @@ body{ background:var(--bg); color:#fff; }
 
 /* Navbar enhancements */
 .site-header { backdrop-filter: blur(8px); background: linear-gradient(180deg, rgba(6,8,20,0.6), rgba(6,8,20,0.35)); border-bottom: 1px solid rgba(255,255,255,0.03); }
+.site-header nav a.bg-accent,
+.site-header nav a.bg-accent:hover {
+  color: var(--color-accent-foreground) !important;
+}
 
 /* Dashboard preview — legacy trade card styles (kept for other pages) */
 .dashboard-card { background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02)); border-radius: 14px; padding: 18px; border: 1px solid rgba(255,255,255,0.04); backdrop-filter: blur(6px); }

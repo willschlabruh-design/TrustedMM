@@ -66,7 +66,7 @@ export default function CreateTrade() {
   return (
     <PageShell
       title="Request a Trade"
-      description="Submit a trade request. TrustedMM will review it and assign a verified escrow agent to protect both parties."
+      description="Submit a trade request. TrustedMM will review it and assign platform oversight to protect both parties."
       maxWidth="lg"
     >
       {/* Step indicator */}
@@ -240,7 +240,7 @@ export default function CreateTrade() {
                 <StatusBadge status="WAITING_FOR_MIDDLEMEN" />
               </div>
               <CardDescription>
-              After submission, TrustedMM assigns a verified escrow agent and notifies all parties.
+              After submission, TrustedMM completes platform assignment and notifies all parties.
             </CardDescription>
             </CardHeader>
             <TradeProgress status="WAITING_FOR_MIDDLEMEN" />

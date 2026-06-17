@@ -37,6 +37,7 @@ export default function BrandLogo({
         priority={priority}
         unoptimized={src === LOGO_API}
         className={cn('object-contain', radius)}
+        sizes={`${width}px`}
         onError={() => setSrc(LOGO_API)}
       />
     </span>

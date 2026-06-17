@@ -7,7 +7,7 @@ import BrandLogo from './BrandLogo';
 const TRUST_INDICATORS = [
   'Protected by Escrow',
   'Identity Verification Required',
-  'Verified Escrow Agents',
+  'Platform-Managed Escrow',
   'Professional Dispute Resolution',
 ] as const;
 

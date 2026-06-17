@@ -9,10 +9,10 @@ type AppShellProps = {
 
 export default function AppShell({ children, showFooter = true, className = '' }: AppShellProps) {
   return (
-    <div className={`flex min-h-screen flex-col bg-app-gradient text-white ${className}`}>
+    <div className={`bg-app-gradient text-white ${className}`}>
       <Header />
-      <div className="flex flex-1 flex-col">{children}</div>
-      {showFooter && <Footer className="mt-auto" />}
+      {children}
+      {showFooter && <Footer />}
     </div>
   );
 }

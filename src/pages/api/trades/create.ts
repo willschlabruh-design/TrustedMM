@@ -44,7 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     data: {
       roomId: room.id,
       senderId: buyer.id,
-      body: `Trade request submitted for "${trade.title}". TrustedMM is reviewing and will assign a verified middleman shortly.`
+      body: `Trade request submitted for "${trade.title}". TrustedMM is reviewing and will complete platform assignment shortly.`
     }
   });
 

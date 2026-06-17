@@ -6,7 +6,7 @@ const PROTECTION_ITEMS: Array<{ label: string; icon: LucideIcon }> = [
   { label: 'Identity Verification', icon: UserRound },
   { label: 'Secure Escrow', icon: Lock },
   { label: 'Dispute Protection', icon: ShieldCheck },
-  { label: 'Verified Escrow Agents', icon: BadgeCheck },
+  { label: 'Platform-Verified', icon: BadgeCheck },
 ];
 
 const TIMELINE_STEPS = [

@@ -9,7 +9,7 @@ const sections = [
   },
   {
     title: '2. Scope of Services',
-    body: 'Trusted provides escrow, middleman assignment, verification, and dispute resolution services to facilitate exchanges of digital assets between users. We may provide ancillary services such as notifications, identity verification, analytics, and wallet integrations.',
+    body: 'Trusted provides escrow, platform assignment, verification, and dispute resolution services to facilitate exchanges of digital assets between users. We may provide ancillary services such as notifications, identity verification, analytics, and wallet integrations.',
   },
   {
     title: '3. Fees and Billing',

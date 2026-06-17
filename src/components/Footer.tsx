@@ -7,7 +7,7 @@ export default function Footer({ className = '' }: { className?: string }) {
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <BrandLogo width={48} height={48} priority className="inline-block" />
+            <BrandLogo width={56} height={56} priority className="inline-block ring-1 ring-white/10" />
             <div>
               <span className="font-semibold">TrustedMM</span>
               <div className="text-sm mt-1 text-slate-400">Secure escrow for digital asset trades.</div>

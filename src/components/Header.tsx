@@ -133,13 +133,14 @@ export default function Header() {
     { href: '/contact', label: 'Contact' },
   ];
 
-  const linkBase =
-    'px-3 py-2 rounded-md transition-colors duration-200 text-white';
-  const linkHover = 'hover:bg-white/10';
-  const linkActive = 'bg-accent text-accent-foreground font-semibold';
-  const linkBaseMobile = 'block px-3 py-2 rounded-md transition-colors duration-200 text-slate-900';
-  const linkHoverMobile = 'hover:bg-slate-100';
-  const linkActiveMobile = 'bg-accent text-accent-foreground font-semibold';
+  const linkBase = 'px-3 py-2 rounded-md transition-colors duration-200';
+  const linkIdle = 'text-white hover:bg-white/10';
+  const linkActive =
+    'bg-accent !text-accent-foreground font-semibold hover:bg-accent-hover hover:!text-accent-foreground';
+  const linkBaseMobile = 'block px-3 py-2 rounded-md transition-colors duration-200';
+  const linkIdleMobile = 'text-slate-900 hover:bg-slate-100';
+  const linkActiveMobile =
+    'bg-accent !text-accent-foreground font-semibold hover:bg-accent-hover hover:!text-accent-foreground';
 
   return (
     <>
@@ -153,8 +154,11 @@ export default function Header() {
             >
               {open ? <X className="h-6 w-6" strokeWidth={2} /> : <Menu className="h-6 w-6" strokeWidth={2} />}
             </button>
-            <a href="/" className="shrink-0" aria-label="TrustedMM home">
-              <BrandLogo width={44} height={44} priority />
+            <a href="/" className="flex items-center gap-2.5 shrink-0 group" aria-label="TrustedMM home">
+              <BrandLogo width={52} height={52} priority className="ring-1 ring-white/10 group-hover:ring-accent/40 transition-shadow duration-200" />
+              <span className="hidden sm:inline text-base font-bold tracking-tight text-white group-hover:text-accent transition-colors duration-200">
+                TrustedMM
+              </span>
             </a>
             <nav className="hidden lg:flex gap-1 items-center ml-2">
               {navItems.map((item) => {
@@ -163,7 +167,7 @@ export default function Header() {
                   <a
                     key={item.href}
                     href={item.href}
-                    className={cn(linkBase, linkHover, active && linkActive)}
+                    className={cn(linkBase, active ? linkActive : linkIdle)}
                     aria-current={active ? 'page' : undefined}
                   >
                     {item.label}
@@ -173,7 +177,7 @@ export default function Header() {
               {isAdmin && (
                 <a
                   href="/admin"
-                  className={cn(linkBase, linkHover, path.startsWith('/admin') && linkActive)}
+                  className={cn(linkBase, path.startsWith('/admin') ? linkActive : linkIdle)}
                   aria-current={path.startsWith('/admin') ? 'page' : undefined}
                 >
                   Admin
@@ -274,8 +278,9 @@ export default function Header() {
           )}
         >
           <div className="p-4 flex items-center justify-between border-b border-slate-200">
-            <a href="/" onClick={() => setOpen(false)}>
-              <BrandLogo width={40} height={40} />
+            <a href="/" onClick={() => setOpen(false)} className="flex items-center gap-2">
+              <BrandLogo width={48} height={48} />
+              <span className="font-bold text-slate-900">TrustedMM</span>
             </a>
             <button
               aria-label="Close menu"
@@ -288,7 +293,7 @@ export default function Header() {
           <nav className="flex flex-col p-4 gap-1">
             {!user && (
               <>
-                <a href="/login" onClick={() => setOpen(false)} className={cn(linkBaseMobile, linkHoverMobile)}>
+                <a href="/login" onClick={() => setOpen(false)} className={cn(linkBaseMobile, linkIdleMobile)}>
                   Login
                 </a>
                 <a
@@ -310,21 +315,21 @@ export default function Header() {
                     setOpen(false);
                     handleLogout();
                   }}
-                  className={cn(linkBaseMobile, linkHoverMobile, 'text-left w-full')}
+                  className={cn(linkBaseMobile, linkIdleMobile, 'text-left w-full')}
                 >
                   Logout
                 </button>
                 <a
                   href="/dashboard"
                   onClick={() => setOpen(false)}
-                  className={cn(linkBaseMobile, linkHoverMobile, path.startsWith('/dashboard') && linkActiveMobile)}
+                  className={cn(linkBaseMobile, path.startsWith('/dashboard') ? linkActiveMobile : linkIdleMobile)}
                 >
                   Dashboard
                 </a>
                 <a
                   href="/settings"
                   onClick={() => setOpen(false)}
-                  className={cn(linkBaseMobile, linkHoverMobile, path.startsWith('/settings') && linkActiveMobile)}
+                  className={cn(linkBaseMobile, path.startsWith('/settings') ? linkActiveMobile : linkIdleMobile)}
                 >
                   Settings
                 </a>
@@ -334,7 +339,7 @@ export default function Header() {
               <a
                 href="/admin"
                 onClick={() => setOpen(false)}
-                className={cn(linkBaseMobile, linkHoverMobile, path.startsWith('/admin') && linkActiveMobile)}
+                className={cn(linkBaseMobile, path.startsWith('/admin') ? linkActiveMobile : linkIdleMobile)}
               >
                 Admin
               </a>
@@ -347,7 +352,7 @@ export default function Header() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className={cn(linkBaseMobile, linkHoverMobile, active && linkActiveMobile)}
+                    className={cn(linkBaseMobile, active ? linkActiveMobile : linkIdleMobile)}
                     aria-current={active ? 'page' : undefined}
                   >
                     {item.label}

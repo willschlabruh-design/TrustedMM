@@ -3,7 +3,7 @@ export const SITE_NAME = 'TrustedMM';
 
 export const DEFAULT_SEO = {
   title: 'TrustedMM – Secure Digital Asset Escrow',
-  description: 'Secure middleman service for digital asset transactions.',
+  description: 'Secure escrow platform for digital asset transactions.',
   ogImage: `${SITE_URL}/og-image.png`,
   twitterCard: 'summary_large_image' as const,
 };

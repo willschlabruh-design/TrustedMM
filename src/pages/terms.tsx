@@ -9,7 +9,7 @@ const sections = [
   },
   {
     title: '2. Services',
-    body: 'Trusted provides an escrow and middleman service to facilitate digital asset trades between users. We hold funds in escrow during a trade and release them according to trade terms and these policies.',
+    body: 'Trusted provides an escrow platform to facilitate digital asset trades between users. We hold funds in escrow during a trade and release them according to trade terms and these policies.',
   },
   {
     title: '3. Fees',

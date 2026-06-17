@@ -7,7 +7,7 @@ const features: Array<{ icon: LucideIcon; title: string; description: string }> 
   {
     icon: BadgeCheck,
     title: 'Verification',
-    description: 'All staff and escrow agents undergo identity checks and background review.',
+    description: 'All platform staff undergo identity checks and background review as part of our secure verification process.',
   },
   {
     icon: Lock,

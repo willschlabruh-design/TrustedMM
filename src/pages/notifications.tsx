@@ -404,13 +404,13 @@ function MiddlemanNotification({
           </div>
           <p className="text-sm text-slate-400">
             {payload.tradeId
-              ? `Trade #${payload.tradeId} is ready for TrustedMM escrow agent assignment.`
-              : 'A trade request is awaiting escrow agent assignment.'}
+              ? `Trade #${payload.tradeId} is ready for TrustedMM assignment.`
+              : 'A trade request is awaiting TrustedMM review.'}
           </p>
           <p className="text-xs text-slate-500 mt-3">Received: {when}</p>
           {trade && trade.middlemanId && (
             <Alert variant="info" className="mt-3">
-              Already assigned: {trade.middleman?.username || trade.middlemanId}
+              Already assigned by TrustedMM
             </Alert>
           )}
         </div>

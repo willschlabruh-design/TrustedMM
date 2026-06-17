@@ -13,20 +13,20 @@ export default function FindMiddlemanRedirect() {
   return (
     <PageShell
       title="Request a Trade"
-      description="TrustedMM assigns verified middlemen to your trade — you don't need to browse or choose one yourself."
+      description="TrustedMM assigns platform oversight to your trade — you don't need to browse or choose anyone yourself."
       maxWidth="md"
     >
       <Card padding="lg">
         <CardHeader>
           <CardTitle>Platform-managed assignment</CardTitle>
           <CardDescription>
-            When you submit a trade request, TrustedMM reviews it and assigns a suitable verified
-            middleman. Both parties are notified when assignment is complete.
+            When you submit a trade request, TrustedMM reviews it and assigns platform oversight.
+            Both parties are notified when assignment is complete.
           </CardDescription>
         </CardHeader>
         <ol className="space-y-3 text-sm text-slate-300 mb-6 list-decimal list-inside">
           <li>Submit your trade request with buyer and seller details</li>
-          <li>TrustedMM reviews and assigns a verified middleman</li>
+          <li>TrustedMM reviews and completes platform assignment</li>
           <li>All parties receive notification to proceed in the trade room</li>
           <li>Verification, escrow, and completion follow platform process</li>
         </ol>
