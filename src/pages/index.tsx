@@ -18,7 +18,7 @@ export default function Home() {
           content="Secure escrow platform for digital asset transactions. TrustedMM protects buyers and sellers with verified platform oversight."
         />
       </Head>
-      <main className="flex-1 text-white">
+      <main className="flex-1 text-white w-full">
         <Hero />
         <HowItWorks />
         <Features />

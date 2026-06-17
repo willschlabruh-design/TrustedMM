@@ -98,7 +98,6 @@ export default function HowItWorksPage() {
       title="How It Works"
       description="TrustedMM manages every trade from request to completion — platform assignment, verification, escrow, and secure release."
       maxWidth="2xl"
-      className="pb-10"
     >
       {/* Trust strip */}
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10">

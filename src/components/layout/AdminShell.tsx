@@ -1,5 +1,4 @@
-import Header from '../Header';
-import Footer from '../Footer';
+import AppShell from './AppShell';
 import { cn } from '../../lib/cn';
 
 type AdminShellProps = {
@@ -11,8 +10,7 @@ type AdminShellProps = {
 
 export default function AdminShell({ children, title, description, className }: AdminShellProps) {
   return (
-    <div className="flex min-h-screen flex-col bg-app-gradient text-white">
-      <Header />
+    <AppShell>
       <main
         className={cn(
           'app-page-main flex-1 container mx-auto px-4 sm:px-6 max-w-7xl w-full',
@@ -27,7 +25,6 @@ export default function AdminShell({ children, title, description, className }: 
         )}
         {children}
       </main>
-      <Footer className="mt-auto" />
-    </div>
+    </AppShell>
   );
 }
